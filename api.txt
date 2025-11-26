@@ -1,0 +1,244 @@
+Техническое задание: REST API для корпоративного портала обучения
+Введение
+Цель: Разработать RESTful API для корпоративной системы обучения (LMS) на Spring Boot.
+
+Базовые принципы:
+
+RESTful архитектура с использованием HTTP методов
+
+JWT аутентификация для защиты эндпоинтов
+
+Ролевая модель на основе Spring Security
+
+JSON формат данных для запросов и ответов
+
+Пагинация для всех списковых endpoints
+
+Сортировка и фильтрация по основным полям
+
+Версионирование API через URI (/api/v1/...)
+
+1. Базовые настройки и безопасность
+1.1. Аутентификация
+POST /api/v1/auth/login - вход в систему
+
+POST /api/v1/auth/refresh - обновление access token
+
+POST /api/v1/auth/logout - выход из системы
+
+1.2. Заголовки
+Authorization: Bearer {accessToken}
+
+Content-Type: application/json
+
+2. Модуль управления пользователями
+2.1. Профиль пользователя
+GET /api/v1/users/me - данные текущего пользователя
+
+PUT /api/v1/users/me - обновление профиля
+
+GET /api/v1/users/{userId} - данные пользователя по ID
+
+2.2. Управление пользователями (Admin)
+GET /api/v1/users - список пользователей с пагинацией
+
+POST /api/v1/users - создание пользователя
+
+PUT /api/v1/users/{userId} - обновление пользователя
+
+DELETE /api/v1/users/{userId} - деактивация пользователя
+
+PUT /api/v1/users/{userId}/roles - назначение ролей
+
+3. Модуль курсов и контента
+3.1. Управление курсами
+GET /api/v1/courses - каталог курсов с фильтрацией
+
+GET /api/v1/courses/{courseId} - информация о курсе
+
+POST /api/v1/courses - создание курса (Instructor/Admin)
+
+PUT /api/v1/courses/{courseId} - обновление курса
+
+DELETE /api/v1/courses/{courseId} - удаление курса
+
+3.2. Управление модулями и уроками
+GET /api/v1/courses/{courseId}/modules - список модулей курса
+
+POST /api/v1/courses/{courseId}/modules - создание модуля
+
+PUT /api/v1/modules/{moduleId} - обновление модуля
+
+DELETE /api/v1/modules/{moduleId} - удаление модуля
+
+GET /api/v1/modules/{moduleId}/lessons - список уроков модуля
+
+POST /api/v1/modules/{moduleId}/lessons - создание урока
+
+PUT /api/v1/lessons/{lessonId} - обновление урока
+
+DELETE /api/v1/lessons/{lessonId} - удаление урока
+
+3.3. Типы контента
+GET /api/v1/lessons/{lessonId}/content - получение контента урока
+
+POST /api/v1/lessons/{lessonId}/content/video - добавление видео
+
+POST /api/v1/lessons/{lessonId}/content/pdf - добавление PDF
+
+POST /api/v1/lessons/{lessonId}/content/quiz - добавление теста
+
+DELETE /api/v1/content/{contentId} - удаление контента
+
+4. Модуль обучения и прогресса
+4.1. Запись на курсы
+GET /api/v1/enrollments - мои записи на курсы
+
+POST /api/v1/courses/{courseId}/enroll - запись на курс
+
+DELETE /api/v1/enrollments/{enrollmentId} - отмена записи
+
+4.2. Отслеживание прогресса
+GET /api/v1/enrollments/{enrollmentId}/progress - прогресс по курсу
+
+PUT /api/v1/lessons/{lessonId}/progress - обновление прогресса урока
+
+POST /api/v1/lessons/{lessonId}/complete - завершение урока
+
+4.3. Сертификаты
+GET /api/v1/certificates - мои сертификаты
+
+GET /api/v1/courses/{courseId}/certificate - сертификат курса
+
+POST /api/v1/courses/{courseId}/generate-certificate - генерация сертификата
+
+5. Модуль тестирования и оценки
+5.1. Управление тестами
+GET /api/v1/quizzes/{quizId} - получение теста
+
+POST /api/v1/quizzes - создание теста
+
+PUT /api/v1/quizzes/{quizId} - обновление теста
+
+DELETE /api/v1/quizzes/{quizId} - удаление теста
+
+5.2. Прохождение тестов
+POST /api/v1/quizzes/{quizId}/attempt - начало попытки
+
+PUT /api/v1/attempts/{attemptId} - сохранение ответов
+
+POST /api/v1/attempts/{attemptId}/submit - завершение попытки
+
+GET /api/v1/attempts/{attemptId}/result - результаты попытки
+
+
+7. Модуль отчетности и аналитики
+7.1. Отчеты
+GET /api/v1/reports/user-progress - прогресс пользователей
+
+GET /api/v1/reports/course-statistics - статистика по курсам
+
+GET /api/v1/reports/department-progress - прогресс по отделам
+
+GET /api/v1/reports/completion-rates - показатели завершения
+
+7.2. Дашборды
+GET /api/v1/dashboard/learner - дашборд студента
+
+GET /api/v1/dashboard/instructor - дашборд преподавателя
+
+GET /api/v1/dashboard/manager - дашборд менеджера
+
+GET /api/v1/dashboard/admin - дашборд администратора
+
+8. Модуль адаптации
+8.1. Программы адаптации
+GET /api/v1/onboarding/programs - программы адаптации
+
+POST /api/v1/onboarding/programs - создание программы
+
+PUT /api/v1/onboarding/programs/{programId} - обновление программы
+
+8.2. Трекинг адаптации
+GET /api/v1/onboarding/assignments - назначения адаптации
+
+POST /api/v1/onboarding/assignments - назначение программы
+
+GET /api/v1/onboarding/progress/{assignmentId} - прогресс адаптации
+
+9. Модуль управления навыками
+9.1. Матрица компетенций
+GET /api/v1/skills/matrix - матрица компетенций
+
+POST /api/v1/skills/matrix - создание компетенции
+
+PUT /api/v1/skills/matrix/{skillId} - обновление компетенции
+
+9.2. Оценка навыков
+GET /api/v1/skills/assessments - оценки навыков
+
+POST /api/v1/skills/assessments - самооценка навыков
+
+PUT /api/v1/skills/assessments/{assessmentId} - оценка руководителем
+
+10. Модуль социального обучения
+10.1. Форумы и обсуждения
+GET /api/v1/discussions/categories - категории форума
+
+GET /api/v1/discussions/topics - темы обсуждений
+
+POST /api/v1/discussions/topics - создание темы
+
+GET /api/v1/discussions/topics/{topicId}/posts - сообщения темы
+
+POST /api/v1/discussions/topics/{topicId}/posts - создание сообщения
+
+10.2. База знаний
+GET /api/v1/knowledge-base/articles - статьи базы знаний
+
+POST /api/v1/knowledge-base/articles - создание статьи
+
+PUT /api/v1/knowledge-base/articles/{articleId} - обновление статьи
+
+11. Системные endpoints
+11.1. Мониторинг здоровья
+GET /api/v1/health - статус сервиса
+
+GET /api/v1/metrics - метрики приложения
+
+11.2. Управление файлами
+POST /api/v1/files/upload - загрузка файлов
+
+GET /api/v1/files/{fileId} - скачивание файлов
+
+DELETE /api/v1/files/{fileId} - удаление файлов
+
+Требования к безопасности
+Ролевой доступ
+ROLE_EMPLOYEE: базовые права на обучение
+
+ROLE_MANAGER: доступ к отчетам отдела
+
+ROLE_INSTRUCTOR: управление курсами и контентом
+
+ROLE_HR: управление адаптацией и навыками
+
+ROLE_ADMIN: полный доступ ко всем функциям
+
+Валидация данных
+Валидация входных параметров
+
+Проверка прав доступа к ресурсам
+
+Обработка исключений и ошибок
+
+Логирование операций
+
+Производительность
+Кэширование часто запрашиваемых данных
+
+Пагинация больших наборов данных
+
+Оптимизация запросов к базе данных
+
+Асинхронная обработка тяжелых операций
