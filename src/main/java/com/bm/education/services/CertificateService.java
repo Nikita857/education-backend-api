@@ -6,7 +6,6 @@ import com.bm.education.models.Course;
 import com.bm.education.models.User;
 import com.bm.education.repositories.CertificateRepository;
 import com.bm.education.repositories.CourseRepository;
-import com.bm.education.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

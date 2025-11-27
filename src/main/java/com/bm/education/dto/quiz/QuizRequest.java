@@ -1,6 +1,5 @@
 package com.bm.education.dto.quiz;
 
-import com.bm.education.models.QuestionType;
 import lombok.Data;
 
 import java.util.List;

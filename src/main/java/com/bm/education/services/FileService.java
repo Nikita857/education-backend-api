@@ -52,7 +52,7 @@ public class FileService {
         if (originalFileName.contains(".")) {
             fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         }
-        String fileName = UUID.randomUUID().toString() + fileExtension;
+        String fileName = UUID.randomUUID()+ fileExtension;
 
         try {
             // Check if the file's name contains invalid characters
@@ -94,7 +94,7 @@ public class FileService {
         if (originalFileName != null && originalFileName.contains(".")) {
             fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
         }
-        String fileName = UUID.randomUUID().toString() + fileExtension;
+        String fileName = UUID.randomUUID() + fileExtension;
 
         try {
             Path targetLocation = this.fileStorageLocation.resolve(fileName);

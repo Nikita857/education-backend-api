@@ -21,7 +21,8 @@ public class RefreshToken {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ToString.Exclude
     private User user;
 
     @Column(nullable = false, unique = true)
