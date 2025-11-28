@@ -14,4 +14,6 @@ public interface ModuleRepository extends JpaRepository<Module, Integer> {
     @Query("SELECT new com.bm.education.dto.course.ModuleDto(m.id, m.title, m.slug, m.status) " +
             "FROM Module m WHERE m.course.id = :courseId ORDER BY m.id")
     List<ModuleDto> findModulesByCourseId(@Param("courseId") Integer courseId);
+
+    List<Module> findByCourseId(Integer courseId);
 }

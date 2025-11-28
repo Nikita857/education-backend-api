@@ -2,11 +2,15 @@ package com.bm.education.controllers;
 
 import com.bm.education.dto.common.ApiResponse;
 import com.bm.education.dto.common.PageResponse;
+import com.bm.education.dto.course.CourseDto;
 import com.bm.education.dto.user.UserDto;
+import com.bm.education.models.User;
+import com.bm.education.services.CourseService;
 import com.bm.education.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +21,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final CourseService courseService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserDto>> getCurrentUser() {
@@ -33,6 +38,14 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable Integer userId) {
         UserDto userDto = userService.getUserById(userId);
         return ResponseEntity.ok(ApiResponse.success(userDto));
+    }
+
+    // User's courses
+    @GetMapping("/{userId}/courses")
+    public ResponseEntity<ApiResponse<List<CourseDto>>> getUserCourses(@PathVariable Integer userId,
+            @AuthenticationPrincipal User user) {
+        List<CourseDto> courses = courseService.getUserCourses(user.getId() == userId ? user.getId() : null);
+        return ResponseEntity.ok(ApiResponse.success(courses));
     }
 
     // Admin endpoints
@@ -79,10 +92,9 @@ public class UserController {
 
     @PutMapping("/{userId}/roles")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<UserDto>> assignRoles(@PathVariable Integer userId, @RequestBody List<String> roles) {
+    public ResponseEntity<ApiResponse<UserDto>> assignRoles(@PathVariable Integer userId,
+            @RequestBody List<String> roles) {
         UserDto updatedUserDto = userService.assignRoles(userId, roles);
         return ResponseEntity.ok(ApiResponse.success("Roles assigned successfully", updatedUserDto));
     }
 }
-
-    

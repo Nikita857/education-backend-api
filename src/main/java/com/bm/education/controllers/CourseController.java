@@ -27,13 +27,14 @@ public class CourseController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) CourseStatus status) {
 
-        PageResponse<CourseDto> response = courseService.getAllCourses(page, size, sortBy, sortDir, title, category, status);
+        PageResponse<CourseDto> response = courseService.getAllCourses(page, size, sortBy, sortDir, title, category,
+                status);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    @GetMapping("/{courseId}")
-    public ResponseEntity<ApiResponse<CourseDto>> getCourseById(@PathVariable Integer courseId) {
-        CourseDto courseDto = courseService.getCourseById(courseId);
+    @GetMapping("/{courseSlug}")
+    public ResponseEntity<ApiResponse<CourseDto>> getCourseById(@PathVariable String courseSlug) {
+        CourseDto courseDto = courseService.getCourseBySlug(courseSlug);
         return ResponseEntity.ok(ApiResponse.success(courseDto));
     }
 
@@ -46,7 +47,8 @@ public class CourseController {
 
     @PutMapping("/{courseId}")
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<CourseDto>> updateCourse(@PathVariable Integer courseId, @RequestBody CourseDto courseDto) {
+    public ResponseEntity<ApiResponse<CourseDto>> updateCourse(@PathVariable Integer courseId,
+            @RequestBody CourseDto courseDto) {
         CourseDto updatedCourseDto = courseService.updateCourse(courseId, courseDto);
         return ResponseEntity.ok(ApiResponse.success("Course updated successfully", updatedCourseDto));
     }

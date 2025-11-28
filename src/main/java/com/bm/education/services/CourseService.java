@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,6 +88,13 @@ public class CourseService {
     }
 
     @Transactional
+    public CourseDto getCourseBySlug(String courseSlug) {
+        Course course = courseRepository.findBySlug(courseSlug)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + courseSlug));
+        return courseMapper.toDto(course);
+    }
+
+    @Transactional
     public CourseDto createCourse(CourseDto courseDto) {
         Course course = courseMapper.toEntity(courseDto);
         Course savedCourse = courseRepository.save(course);
@@ -110,6 +118,19 @@ public class CourseService {
             throw new EntityNotFoundException("Course not found: " + courseId);
         }
         courseRepository.deleteById(courseId);
+    }
+
+    @Transactional
+    public List<CourseDto> getUserCourses(Integer userId) {
+        if (userId == null) {
+            throw new AccessDeniedException("You don't have access to this resource");
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        List<Course> courses = userCoursesRepository.findByUser(user).stream()
+                .map(UserCourses::getCourse)
+                .toList();
+        return courses.stream().map(courseMapper::toDto).toList();
     }
 
     @Transactional

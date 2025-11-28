@@ -8,8 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -230,8 +233,15 @@ public class DatabaseSeeder {
         Course course = courseRepository.findBySlug("osnovy-programmirovaniya").orElseThrow();
 
         // Mark first lesson as completed
-        Module module = course.getModules().get(0);
-        Lesson lesson = module.getLessons().get(0);
+        List<Module> modules = moduleRepository.findByCourseId(course.getId());
+        if (modules.isEmpty())
+            return;
+        Module module = modules.get(0);
+
+        List<Lesson> lessons = lessonRepository.findByModuleId(module.getId());
+        if (lessons.isEmpty())
+            return;
+        Lesson lesson = lessons.get(0);
 
         UserProgress progress = new UserProgress();
         progress.setUser(user);
@@ -251,7 +261,7 @@ public class DatabaseSeeder {
         UserCourseCompletion completion = new UserCourseCompletion();
         completion.setUser(user);
         completion.setCourse(course);
-        completion.setCompletionDate(java.time.Instant.now());
+        completion.setCompletionDate(LocalDateTime.now());
         completion.setScore(95.0);
         userCourseCompletionRepository.save(completion);
 
@@ -260,7 +270,7 @@ public class DatabaseSeeder {
         certificate.setCourse(course);
         certificate.setTitle("Certificate of Completion: " + course.getTitle());
         certificate.setDescription("Awarded for completing " + course.getTitle());
-        certificate.setCertificateNumber(java.util.UUID.randomUUID().toString());
+        certificate.setCertificateNumber(UUID.randomUUID().toString());
         certificate.setCertificateUrl("/api/v1/certificates/download/1");
         certificate.setCertificateFilePath("path/to/cert.pdf");
         certificateRepository.save(certificate);
