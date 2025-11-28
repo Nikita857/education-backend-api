@@ -20,5 +20,6 @@ public interface SkillMapper {
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "skillId", source = "skill.id")
     @Mapping(target = "skillName", source = "skill.name")
+    @Mapping(target = "assessedAt", source = "lastAssessed")
     UserSkillDto toUserSkillDto(UserSkill userSkill);
 }
