@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -20,6 +21,9 @@ public class DatabaseSeeder {
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
     private final AnswerOptionRepository answerOptionRepository;
+    private final CourseReviewRepository courseReviewRepository;
+    private final DiscussionTopicRepository discussionTopicRepository;
+    private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void seedDatabase() {
@@ -28,6 +32,9 @@ public class DatabaseSeeder {
         }
         if (courseRepository.count() == 0) {
             createDefaultCourses();
+        }
+        if (courseReviewRepository.count() == 0 && discussionTopicRepository.count() == 0) {
+            seedExtraData();
         }
     }
 
@@ -258,5 +265,119 @@ public class DatabaseSeeder {
         option.setIsCorrect(isCorrect);
         option.setQuestion(question);
         return answerOptionRepository.save(option);
+    }
+
+    private void seedExtraData() {
+        createCourseReviews();
+        createDiscussionsAndComments();
+        addMoreTestQuestions();
+    }
+
+    private void createCourseReviews() {
+        List<User> users = userRepository.findAll();
+        List<Course> courses = courseRepository.findAll();
+
+        if (users.isEmpty() || courses.isEmpty()) {
+            return;
+        }
+
+        // Create reviews for the first course
+        Course course1 = courses.get(0);
+        createReview(course1, users.get(4), 5, "Отличный курс для начинающих! Все очень понятно и доступно.");
+        createReview(course1, users.get(5), 4, "Хороший курс, но хотелось бы больше практических заданий.");
+
+        // Create reviews for the second course
+        if (courses.size() > 1) {
+            Course course2 = courses.get(1);
+            createReview(course2, users.get(6), 5, "Очень полезный курс по безопасности. Узнал много нового.");
+            createReview(course2, users.get(7), 4, "Материал сложный, но интересный. Спасибо!");
+        }
+    }
+
+    private void createReview(Course course, User user, int rating, String comment) {
+        CourseReview review = new CourseReview();
+        review.setCourse(course);
+        review.setUser(user);
+        review.setRating(rating);
+        review.setComment(comment);
+        courseReviewRepository.save(review);
+    }
+
+    private void createDiscussionsAndComments() {
+        User author = userRepository.findByUsername("instructor").orElse(null);
+        if (author == null) return;
+
+        DiscussionTopic topic1 = createDiscussionTopic(author, "Обсуждение домашних заданий", "Давайте обсудим сложности, с которыми вы столкнулись при выполнении домашних заданий.");
+        User user1 = userRepository.findByUsername("user_1").orElse(null);
+        User user2 = userRepository.findByUsername("user_2").orElse(null);
+
+        if (user1 != null) {
+            createComment(topic1, user1, "У меня возникли проблемы с заданием по циклам. Не могу понять, как правильно составить условие выхода.");
+        }
+        if (user2 != null) {
+            createComment(topic1, user2, "Я тоже столкнулся с этим. Помогло перечитать лекцию и посмотреть примеры.");
+        }
+
+        DiscussionTopic topic2 = createDiscussionTopic(author, "Вопросы по криптографии", "Задавайте любые вопросы по модулю криптографии.");
+        if (user1 != null) {
+            createComment(topic2, user1, "Что такое 'соль' в хешировании и зачем она нужна?");
+        }
+    }
+
+    private DiscussionTopic createDiscussionTopic(User author, String title, String content) {
+        DiscussionTopic topic = new DiscussionTopic();
+        topic.setAuthor(author);
+        topic.setTitle(title);
+        topic.setContent(content);
+        return discussionTopicRepository.save(topic);
+    }
+
+    private void createComment(DiscussionTopic topic, User author, String content) {
+        Comment comment = new Comment();
+        comment.setDiscussionTopic(topic);
+        comment.setAuthor(author);
+        comment.setContent(content);
+        commentRepository.save(comment);
+    }
+     private void addMoreTestQuestions() {
+        // Добавление вопросов в тест "Тест по основам программирования"
+        testRepository.findByTitle("Тест по основам программирования").ifPresent(test -> {
+            Question q = createQuestion(test, "Какой оператор используется для присваивания значения в большинстве языков программирования?", QuestionType.SINGLE_CHOICE, 1);
+            createAnswerOption(q, "=", true);
+            createAnswerOption(q, "==", false);
+            createAnswerOption(q, ":=", false);
+        });
+
+        // Добавление вопросов в тест "Тест по управляющим структурам"
+        testRepository.findByTitle("Тест по управляющим структурам").ifPresent(test -> {
+            Question q = createQuestion(test, "Какой цикл гарантированно выполнится хотя бы один раз?", QuestionType.SINGLE_CHOICE, 1);
+            createAnswerOption(q, "do-while", true);
+            createAnswerOption(q, "while", false);
+            createAnswerOption(q, "for", false);
+        });
+
+        // Добавление вопросов в тест "Итоговый тест по функциям"
+        testRepository.findByTitle("Итоговый тест по функциям").ifPresent(test -> {
+            Question q = createQuestion(test, "Что такое рекурсия?", QuestionType.SINGLE_CHOICE, 2);
+            createAnswerOption(q, "Вызов функцией самой себя", true);
+            createAnswerOption(q, "Цикл внутри функции", false);
+            createAnswerOption(q, "Функция, возвращающая другую функцию", false);
+        });
+
+        // Добавление вопросов в тест "Тест по основам ИБ"
+        testRepository.findByTitle("Тест по основам ИБ").ifPresent(test -> {
+            Question q = createQuestion(test, "Что такое фишинг?", QuestionType.SINGLE_CHOICE, 1);
+            createAnswerOption(q, "Вид интернет-мошенничества с целью получения доступа к конфиденциальным данным пользователей", true);
+            createAnswerOption(q, "Тип вредоносного ПО", false);
+            createAnswerOption(q, "Сетевая атака", false);
+        });
+
+        // Добавление вопросов в тест "Тест по криптографии"
+        testRepository.findByTitle("Тест по криптографии").ifPresent(test -> {
+            Question q = createQuestion(test, "В чем основное отличие асимметричного шифрования от симметричного?", QuestionType.SINGLE_CHOICE, 2);
+            createAnswerOption(q, "Использование двух разных ключей (открытого и закрытого)", true);
+            createAnswerOption(q, "Более высокая скорость шифрования", false);
+            createAnswerOption(q, "Использование одного и того же ключа", false);
+        });
     }
 }
