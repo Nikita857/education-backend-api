@@ -15,6 +15,8 @@ public class OnboardingService {
 
     private final AdaptationProgramRepository adaptationProgramRepository;
 
+    private final com.bm.education.repositories.UserRepository userRepository;
+
     @Transactional(readOnly = true)
     public List<AdaptationProgram> getAllPrograms() {
         return adaptationProgramRepository.findAll();
@@ -27,8 +29,7 @@ public class OnboardingService {
 
     @Transactional
     public AdaptationProgram updateProgram(Long programId, AdaptationProgram programDetails) {
-        AdaptationProgram program = adaptationProgramRepository.findById(programId)
-                .orElseThrow(() -> new EntityNotFoundException("Program not found: " + programId));
+        AdaptationProgram program = adaptationProgramRepository.findById(programId).orElseThrow(() -> new EntityNotFoundException("Program not found: " + programId));
 
         program.setTitle(programDetails.getTitle());
         program.setDescription(programDetails.getDescription());
@@ -37,7 +38,30 @@ public class OnboardingService {
         program.setStatus(programDetails.getStatus());
 
         // Update relationships if needed (assignedTo, mentor)
+        if (programDetails.getAssignedTo() != null) {
+            program.setAssignedTo(programDetails.getAssignedTo());
+        }
+        if (programDetails.getMentor() != null) {
+            program.setMentor(programDetails.getMentor());
+        }
 
         return adaptationProgramRepository.save(program);
+    }
+
+    @Transactional
+    public AdaptationProgram assignOnboardingProgram(AdaptationProgram program, Integer userId) {
+        var user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        program.setAssignedTo(user);
+        return adaptationProgramRepository.save(program);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AdaptationProgram> getOnboardingAssignments() {
+        return adaptationProgramRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public AdaptationProgram getOnboardingProgress(Long assignmentId) {
+        return adaptationProgramRepository.findById(assignmentId).orElseThrow(() -> new EntityNotFoundException("Assignment not found: " + assignmentId));
     }
 }

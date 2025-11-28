@@ -53,22 +53,27 @@ public class OnboardingController {
     @GetMapping("/assignments")
     @PreAuthorize("hasRole('HR') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<AdaptationProgramDto>>> getOnboardingAssignments() {
-        // Implementation to get onboarding assignments
-        return ResponseEntity.ok(ApiResponse.success(List.of())); // Placeholder
+        List<AdaptationProgram> programs = onboardingService.getOnboardingAssignments();
+        List<AdaptationProgramDto> programDtos = programs.stream()
+                .map(onboardingMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ApiResponse.success(programDtos));
     }
 
     @PostMapping("/assignments")
     @PreAuthorize("hasRole('HR') or hasRole('MANAGER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<AdaptationProgramDto>> assignOnboardingProgram(
             @RequestBody AdaptationProgramDto assignmentDto) {
-        // Implementation to assign an onboarding program to an employee
-        return ResponseEntity.ok(ApiResponse.success(new AdaptationProgramDto())); // Placeholder
+        AdaptationProgram program = onboardingMapper.toEntity(assignmentDto);
+        AdaptationProgram savedProgram = onboardingService.assignOnboardingProgram(program,
+                assignmentDto.getAssignedToUserId());
+        return ResponseEntity.ok(ApiResponse.success(onboardingMapper.toDto(savedProgram)));
     }
 
     @GetMapping("/progress/{assignmentId}")
     @PreAuthorize("hasRole('HR') or hasRole('MANAGER') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Object>> getOnboardingProgress(@PathVariable Long assignmentId) {
-        // Implementation to get onboarding progress
-        return ResponseEntity.ok(ApiResponse.success(new Object())); // Placeholder
+    public ResponseEntity<ApiResponse<AdaptationProgramDto>> getOnboardingProgress(@PathVariable Long assignmentId) {
+        AdaptationProgram program = onboardingService.getOnboardingProgress(assignmentId);
+        return ResponseEntity.ok(ApiResponse.success(onboardingMapper.toDto(program)));
     }
 }

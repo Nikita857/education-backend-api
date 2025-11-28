@@ -15,7 +15,7 @@ public class ExtendedDatabaseSeeder implements CommandLineRunner {
     private final TagRepository tagRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         // Заполняем базу данных только если она пуста
         try {
             if (courseCategoryRepository.count() == 0) {

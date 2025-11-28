@@ -37,8 +37,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            User user = (User) authentication.getPrincipal();
+        if (authentication != null && authentication.getPrincipal() instanceof User user) {
             refreshTokenService.deleteByUserId(user.getId());
         }
         return ResponseEntity.ok(ApiResponse.success("Successfully logged out"));

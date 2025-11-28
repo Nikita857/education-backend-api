@@ -1,6 +1,5 @@
 package com.bm.education.dto.quiz;
 
-import com.bm.education.models.TestResultStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

@@ -1,7 +1,6 @@
 package com.bm.education.services;
 
 import com.bm.education.dto.quiz.QuizAnswersRequest;
-import com.bm.education.dto.quiz.TestResultDto;
 import com.bm.education.exceptions.TestLimitExceededException;
 import com.bm.education.mapper.TestResultMapper;
 import com.bm.education.models.*;
@@ -29,16 +28,13 @@ public class QuizAttemptService {
     private final QuestionRepository questionRepository;
     private final AnswerOptionRepository answerOptionRepository;
     private final EnrollmentProgressService enrollmentProgressService;
-    private final TestResultMapper testResultMapper;
 
     @Transactional
-    public TestResultDto startQuizAttempt(Long testId) {
+    public TestResult startQuizAttempt(Long testId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        Test test = testRepository.findById(testId)
-                .orElseThrow(() -> new EntityNotFoundException("Test not found"));
+        Test test = testRepository.findById(testId).orElseThrow(() -> new EntityNotFoundException("Test not found"));
 
         // Check if user has exceeded max attempts
         long attempts = testResultRepository.countByTestAndUser(test, user);
@@ -50,15 +46,12 @@ public class QuizAttemptService {
         testResult.setTest(test);
         testResult.setUser(user);
         testResult.setPassed(false);
-        TestResult savedResult = testResultRepository.save(testResult);
-
-        return testResultMapper.toDto(savedResult);
+        return testResultRepository.save(testResult);
     }
 
     @Transactional
     public void saveQuizAnswers(Long attemptId, QuizAnswersRequest answersRequest) {
-        TestResult testResult = testResultRepository.findById(attemptId)
-                .orElseThrow(() -> new RuntimeException("Quiz attempt not found"));
+        TestResult testResult = testResultRepository.findById(attemptId).orElseThrow(() -> new RuntimeException("Quiz attempt not found"));
 
         userAnswerRepository.deleteByTestResult(testResult);
 
@@ -66,11 +59,9 @@ public class QuizAttemptService {
 
         if (answersRequest.getSelectedAnswers() != null) {
             answersRequest.getSelectedAnswers().forEach((questionId, answerOptionIds) -> {
-                Question question = questionRepository.findById(questionId)
-                        .orElseThrow(() -> new EntityNotFoundException("Question not found"));
+                Question question = questionRepository.findById(questionId).orElseThrow(() -> new EntityNotFoundException("Question not found"));
                 answerOptionIds.forEach(answerOptionId -> {
-                    AnswerOption answerOption = answerOptionRepository.findById(answerOptionId)
-                            .orElseThrow(() -> new EntityNotFoundException("Answer option not found"));
+                    AnswerOption answerOption = answerOptionRepository.findById(answerOptionId).orElseThrow(() -> new EntityNotFoundException("Answer option not found"));
                     UserAnswer userAnswer = new UserAnswer();
                     userAnswer.setTestResult(testResult);
                     userAnswer.setQuestion(question);
@@ -82,8 +73,7 @@ public class QuizAttemptService {
 
         if (answersRequest.getTextAnswers() != null) {
             answersRequest.getTextAnswers().forEach((questionId, textAnswer) -> {
-                Question question = questionRepository.findById(questionId)
-                        .orElseThrow(() -> new EntityNotFoundException("Question not found"));
+                Question question = questionRepository.findById(questionId).orElseThrow(() -> new EntityNotFoundException("Question not found"));
                 UserAnswer userAnswer = new UserAnswer();
                 userAnswer.setTestResult(testResult);
                 userAnswer.setQuestion(question);
@@ -96,9 +86,8 @@ public class QuizAttemptService {
     }
 
     @Transactional
-    public TestResultDto submitQuizAttempt(Long attemptId) {
-        TestResult testResult = testResultRepository.findById(attemptId)
-                .orElseThrow(() -> new EntityNotFoundException("Quiz attempt not found"));
+    public TestResult submitQuizAttempt(Long attemptId) {
+        TestResult testResult = testResultRepository.findById(attemptId).orElseThrow(() -> new EntityNotFoundException("Quiz attempt not found"));
 
         if (testResult.getCompletedAt() != null) {
             throw new RuntimeException("This quiz attempt has already been submitted.");
@@ -108,8 +97,7 @@ public class QuizAttemptService {
         int maxPossibleScore = 0;
         List<UserAnswer> userAnswers = userAnswerRepository.findByTestResult(testResult);
 
-        var answersByQuestion = userAnswers.stream()
-                .collect(Collectors.groupingBy(UserAnswer::getQuestion));
+        var answersByQuestion = userAnswers.stream().collect(Collectors.groupingBy(UserAnswer::getQuestion));
 
         for (Question question : testResult.getTest().getQuestions()) {
             maxPossibleScore += question.getPoints();
@@ -136,13 +124,11 @@ public class QuizAttemptService {
             enrollmentProgressService.markLessonAsCompleted(testResult.getTest().getLesson().getId());
         }
 
-        return testResultMapper.toDto(savedTestResult);
+        return savedTestResult;
     }
 
-    public TestResultDto getTestResult(Long attemptId) {
-        TestResult result = testResultRepository.findById(attemptId)
-                .orElseThrow(() -> new EntityNotFoundException("Quiz result not found: " + attemptId));
-        return testResultMapper.toDto(result);
+    public TestResult getTestResult(Long attemptId) {
+        return testResultRepository.findById(attemptId).orElseThrow(() -> new EntityNotFoundException("Quiz result not found: " + attemptId));
     }
 
     private boolean isAnswerCorrect(Question question, List<UserAnswer> userAnswers) {
@@ -150,17 +136,11 @@ public class QuizAttemptService {
             if (userAnswers.size() != 1) return false;
             return userAnswers.getFirst().getChosenAnswer() != null && userAnswers.getFirst().getChosenAnswer().getIsCorrect();
         } else if (question.getQuestionType() == QuestionType.MULTIPLE_CHOICE) {
-            List<AnswerOption> correctOptions = question.getAnswerOptions().stream()
-                    .filter(AnswerOption::getIsCorrect)
-                    .toList();
+            List<AnswerOption> correctOptions = question.getAnswerOptions().stream().filter(AnswerOption::getIsCorrect).toList();
 
-            List<AnswerOption> chosenOptions = userAnswers.stream()
-                    .map(UserAnswer::getChosenAnswer)
-                    .filter(java.util.Objects::nonNull)
-                    .toList();
+            List<AnswerOption> chosenOptions = userAnswers.stream().map(UserAnswer::getChosenAnswer).filter(java.util.Objects::nonNull).toList();
 
-            return correctOptions.size() == chosenOptions.size() &&
-                    new HashSet<>(chosenOptions).containsAll(correctOptions);
+            return correctOptions.size() == chosenOptions.size() && new HashSet<>(chosenOptions).containsAll(correctOptions);
         } else if (question.getQuestionType() == QuestionType.TEXT_RESPONSE) {
             return false;
         }

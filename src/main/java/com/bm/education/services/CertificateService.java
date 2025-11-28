@@ -1,13 +1,11 @@
 package com.bm.education.services;
 
 import com.bm.education.dto.FileUploadResponse;
-import com.bm.education.dto.certificate.CertificateDto;
 import com.bm.education.models.Certificate;
 import com.bm.education.models.Course;
 import com.bm.education.models.User;
 import com.bm.education.repositories.CertificateRepository;
 import com.bm.education.repositories.CourseRepository;
-import com.bm.education.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,29 +27,24 @@ public class CertificateService {
     private final UserService userService;
     private final CertificateRepository certificateRepository;
     private final CourseRepository courseRepository;
-    private final UserRepository userRepository;
     private final FileService fileService;
 
-    @Transactional
-    public List<CertificateDto> getUserCertificates(String username) {
-        List<CertificateDto> certificates = certificateRepository
-                .findCertificatesByUserId(userService.findByUsername(username).getId());
+    @Transactional(readOnly = true)
+    public List<Certificate> getUserCertificates(String username) {
+        List<Certificate> certificates = certificateRepository.findCertificatesByUserId(userService.findByUsername(username).getId());
         return !certificates.isEmpty() ? certificates : Collections.emptyList();
     }
 
     @Transactional(readOnly = true)
-    public CertificateDto getCertificateByUserIdAndCourseId(String username, Integer courseId) {
+    public Certificate getCertificateByUserIdAndCourseId(String username, Integer courseId) {
         Integer userId = userService.findByUsername(username).getId();
-        return certificateRepository.findCertificateByUserIdAndCourseId(userId, courseId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Certificate not found for user ID: " + userId + " and course ID: " + courseId));
+        return certificateRepository.findCertificateByUserIdAndCourseId(userId, courseId).orElseThrow(() -> new EntityNotFoundException("Certificate not found for user ID: " + userId + " and course ID: " + courseId));
     }
 
     @Transactional
     public Certificate generateCertificate(String username, Integer courseId) {
         User user = userService.findByUsername(username);
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + courseId));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException("Course not found: " + courseId));
 
         // Check if certificate already exists
         if (certificateRepository.findCertificateByUserIdAndCourseId(user.getId(), courseId).isPresent()) {
@@ -66,15 +59,13 @@ public class CertificateService {
         try {
             byte[] certificateImage = createCertificateImage(user, course);
             String fileName = "certificate_" + user.getId() + "_" + course.getId() + ".png";
-            FileUploadResponse fileResponse = fileService.storeGeneratedFile(certificateImage, fileName, "image/png",
-                    username);
+            FileUploadResponse fileResponse = fileService.storeGeneratedFile(certificateImage, fileName, "image/png", username);
 
             Certificate certificate = new Certificate();
             certificate.setUser(user);
             certificate.setCourse(course);
             certificate.setTitle("Certificate of Completion: " + course.getTitle());
-            certificate.setDescription("Awarded to " + user.getFirstName() + " " + user.getLastName()
-                    + " for completing " + course.getTitle());
+            certificate.setDescription("Awarded to " + user.getFirstName() + " " + user.getLastName() + " for completing " + course.getTitle());
             certificate.setCertificateNumber(UUID.randomUUID().toString());
             certificate.setCertificateFilePath(fileResponse.getFileId()); // Storing File ID as path for retrieval
             certificate.setCertificateUrl("/api/v1/files/" + fileResponse.getFileId());

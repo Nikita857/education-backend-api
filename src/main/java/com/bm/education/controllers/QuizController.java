@@ -2,6 +2,7 @@ package com.bm.education.controllers;
 
 import com.bm.education.dto.common.ApiResponse;
 import com.bm.education.dto.quiz.*;
+import com.bm.education.mapper.QuizMapper;
 import com.bm.education.services.QuestionService;
 import com.bm.education.services.QuizAttemptService;
 import com.bm.education.services.QuizService;
@@ -18,25 +19,27 @@ public class QuizController {
     private final QuizService quizService;
     private final QuestionService questionService;
     private final QuizAttemptService quizAttemptService;
+    private final QuizMapper quizMapper;
 
     @GetMapping("/{quizId}")
     public ResponseEntity<ApiResponse<QuizDto>> getQuiz(@PathVariable Long quizId) {
-        QuizDto quiz = quizService.getQuizForStudent(quizId);
-        return ResponseEntity.ok(ApiResponse.success(quiz));
+        com.bm.education.models.Test quiz = quizService.getQuizForStudent(quizId);
+        return ResponseEntity.ok(ApiResponse.success(quizMapper.toQuizDto(quiz)));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<QuizDto>> createQuiz(@RequestBody QuizRequest quizRequest) {
-        QuizDto savedQuiz = quizService.createQuiz(quizRequest);
-        return ResponseEntity.ok(ApiResponse.success("Quiz created successfully", savedQuiz));
+        com.bm.education.models.Test savedQuiz = quizService.createQuiz(quizRequest);
+        return ResponseEntity.ok(ApiResponse.success("Quiz created successfully", quizMapper.toQuizDto(savedQuiz)));
     }
 
     @PutMapping("/{quizId}")
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<QuizDto>> updateQuiz(@PathVariable Long quizId, @RequestBody QuizRequest quizRequest) {
-        QuizDto updatedQuiz = quizService.updateQuiz(quizId, quizRequest);
-        return ResponseEntity.ok(ApiResponse.success("Quiz updated successfully", updatedQuiz));
+    public ResponseEntity<ApiResponse<QuizDto>> updateQuiz(@PathVariable Long quizId,
+            @RequestBody QuizRequest quizRequest) {
+        com.bm.education.models.Test updatedQuiz = quizService.updateQuiz(quizId, quizRequest);
+        return ResponseEntity.ok(ApiResponse.success("Quiz updated successfully", quizMapper.toQuizDto(updatedQuiz)));
     }
 
     @DeleteMapping("/{quizId}")
@@ -46,24 +49,29 @@ public class QuizController {
         return ResponseEntity.ok(ApiResponse.success("Quiz deleted successfully"));
     }
 
+    private final com.bm.education.mapper.TestResultMapper testResultMapper;
+
     @PostMapping("/{quizId}/questions")
     @PreAuthorize("hasRole('INSTRUCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<QuestionDto>> addQuestionToQuiz(@PathVariable Long quizId, @RequestBody QuestionRequest questionRequest) {
-        QuestionDto savedQuestion = questionService.createQuestion(quizId, questionRequest);
-        return ResponseEntity.ok(ApiResponse.success("Question added successfully", savedQuestion));
+    public ResponseEntity<ApiResponse<QuestionDto>> addQuestionToQuiz(@PathVariable Long quizId,
+            @RequestBody QuestionRequest questionRequest) {
+        com.bm.education.models.Question savedQuestion = questionService.createQuestion(quizId, questionRequest);
+        return ResponseEntity
+                .ok(ApiResponse.success("Question added successfully", quizMapper.toQuestionDto(savedQuestion)));
     }
 
     // Quiz attempt endpoints
     @PostMapping("/{quizId}/attempt")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<TestResultDto>> startQuizAttempt(@PathVariable Long quizId) {
-        TestResultDto testResult = quizAttemptService.startQuizAttempt(quizId);
-        return ResponseEntity.ok(ApiResponse.success("Quiz attempt started", testResult));
+        com.bm.education.models.TestResult testResult = quizAttemptService.startQuizAttempt(quizId);
+        return ResponseEntity.ok(ApiResponse.success("Quiz attempt started", testResultMapper.toDto(testResult)));
     }
 
     @PutMapping("/attempts/{attemptId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> saveQuizAnswers(@PathVariable Long attemptId, @RequestBody QuizAnswersRequest answersRequest) {
+    public ResponseEntity<ApiResponse<Void>> saveQuizAnswers(@PathVariable Long attemptId,
+            @RequestBody QuizAnswersRequest answersRequest) {
         quizAttemptService.saveQuizAnswers(attemptId, answersRequest);
         return ResponseEntity.ok(ApiResponse.success("Answers saved successfully"));
     }
@@ -71,13 +79,14 @@ public class QuizController {
     @PostMapping("/attempts/{attemptId}/submit")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<TestResultDto>> submitQuizAttempt(@PathVariable Long attemptId) {
-        TestResultDto testResult = quizAttemptService.submitQuizAttempt(attemptId);
-        return ResponseEntity.ok(ApiResponse.success("Quiz submitted successfully", testResult));
+        com.bm.education.models.TestResult testResult = quizAttemptService.submitQuizAttempt(attemptId);
+        return ResponseEntity
+                .ok(ApiResponse.success("Quiz submitted successfully", testResultMapper.toDto(testResult)));
     }
 
     @GetMapping("/attempts/{attemptId}/result")
     public ResponseEntity<ApiResponse<TestResultDto>> getQuizResult(@PathVariable Long attemptId) {
-        TestResultDto result = quizAttemptService.getTestResult(attemptId);
-        return ResponseEntity.ok(ApiResponse.success(result));
+        com.bm.education.models.TestResult result = quizAttemptService.getTestResult(attemptId);
+        return ResponseEntity.ok(ApiResponse.success(testResultMapper.toDto(result)));
     }
 }

@@ -14,10 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -31,9 +30,9 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
+        return userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
     }
 
     public UserDto toUserDto(User user) {
@@ -49,21 +48,12 @@ public class UserService {
             throw new EntityExistsException("User with username " + request.getUsername() + " already exists");
         }
 
-        User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .department(request.getDepartment())
-                .jobTitle(request.getJobTitle())
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .roles(Set.of(Role.ROLE_USER))
-                .build();
+        User user = User.builder().firstName(request.getFirstName()).lastName(request.getLastName()).department(request.getDepartment()).jobTitle(request.getJobTitle()).username(request.getUsername()).password(passwordEncoder.encode(request.getPassword())).roles(Set.of(Role.ROLE_USER)).build();
 
         return userRepository.save(user);
     }
 
-    public PageResponse<UserDto> getAllUsers(int page, int size, String sortBy, String sortDir,
-            String department, String jobTitle) {
+    public PageResponse<UserDto> getAllUsers(int page, int size, String sortBy, String sortDir, String department, String jobTitle) {
         Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -85,13 +75,11 @@ public class UserService {
     }
 
     public UserDto getUserById(Integer userId) {
-        return userRepository.findUserDtoById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        return userRepository.findUserDtoById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
     }
 
     public UserDto updateUser(Integer userId, UserDto userDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
         // Update user fields
         user.setFirstName(userDto.getFirstName());
@@ -112,26 +100,14 @@ public class UserService {
             throw new EntityExistsException("User with username " + userDto.getUsername() + " already exists");
         }
 
-        User user = User.builder()
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .department(userDto.getDepartment())
-                .jobTitle(userDto.getJobTitle())
-                .username(userDto.getUsername())
-                .email(userDto.getEmail())
-                .password(passwordEncoder.encode("password123"))
-                .roles(userDto.getRoles() != null && !userDto.getRoles().isEmpty() ? userDto.getRoles()
-                        : Set.of(Role.ROLE_USER))
-                .isActive(true)
-                .build();
+        User user = User.builder().firstName(userDto.getFirstName()).lastName(userDto.getLastName()).department(userDto.getDepartment()).jobTitle(userDto.getJobTitle()).username(userDto.getUsername()).email(userDto.getEmail()).password(passwordEncoder.encode("password123")).roles(userDto.getRoles() != null && !userDto.getRoles().isEmpty() ? userDto.getRoles() : Set.of(Role.ROLE_USER)).isActive(true).build();
 
         User savedUser = userRepository.save(user);
         return userRepository.findUserDtoById(savedUser.getId()).orElseThrow();
     }
 
     public void deleteUser(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
         // Instead of deleting, we can deactivate user
         user.setIsActive(false);
@@ -139,12 +115,9 @@ public class UserService {
     }
 
     public UserDto assignRoles(Integer userId, List<String> roles) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
-        Set<Role> userRoles = roles.stream()
-                .map(Role::valueOf)
-                .collect(Collectors.toSet());
+        Set<Role> userRoles = roles.stream().map(Role::valueOf).collect(Collectors.toSet());
 
         user.setRoles(userRoles);
         User updatedUser = userRepository.save(user);
@@ -158,15 +131,13 @@ public class UserService {
     }
 
     public UserDto getCurrentUserDto() {
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
-                .getAuthentication().getName();
+        String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         User user = findByUsername(username);
         return userMapper.toDto(user);
     }
 
     public UserDto updateCurrentUserSettings(UserDto userDto) {
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
-                .getAuthentication().getName();
+        String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         User user = findByUsername(username);
 
         user.setFirstName(userDto.getFirstName());

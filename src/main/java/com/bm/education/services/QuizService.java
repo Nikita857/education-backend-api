@@ -1,8 +1,6 @@
 package com.bm.education.services;
 
-import com.bm.education.dto.quiz.QuizDto;
 import com.bm.education.dto.quiz.QuizRequest;
-import com.bm.education.mapper.QuizMapper;
 import com.bm.education.models.Lesson;
 import com.bm.education.models.Test;
 import com.bm.education.repositories.LessonRepository;
@@ -18,17 +16,15 @@ public class QuizService {
 
     private final TestRepository testRepository;
     private final LessonRepository lessonRepository;
-    private final QuizMapper quizMapper;
 
     @Transactional(readOnly = true)
-    public QuizDto getQuizForStudent(Long quizId) {
-        Test test = testRepository.findById(quizId)
+    public Test getQuizForStudent(Long quizId) {
+        return testRepository.findById(quizId)
                 .orElseThrow(() -> new EntityNotFoundException("Quiz not found: " + quizId));
-        return quizMapper.toQuizDto(test);
     }
 
     @Transactional
-    public QuizDto createQuiz(QuizRequest quizRequest) {
+    public Test createQuiz(QuizRequest quizRequest) {
         Lesson lesson = null;
         if (quizRequest.getLessonId() != null) {
             lesson = lessonRepository.findById(quizRequest.getLessonId().intValue())
@@ -46,12 +42,11 @@ public class QuizService {
                 .lesson(lesson)
                 .build();
 
-        Test savedQuiz = testRepository.save(quiz);
-        return quizMapper.toQuizDto(savedQuiz);
+        return testRepository.save(quiz);
     }
 
     @Transactional
-    public QuizDto updateQuiz(Long quizId, QuizRequest quizRequest) {
+    public Test updateQuiz(Long quizId, QuizRequest quizRequest) {
         Test existingQuiz = testRepository.findById(quizId)
                 .orElseThrow(() -> new EntityNotFoundException("Quiz not found: " + quizId));
 
@@ -71,8 +66,7 @@ public class QuizService {
             existingQuiz.setLesson(null);
         }
 
-        Test updatedQuiz = testRepository.save(existingQuiz);
-        return quizMapper.toQuizDto(updatedQuiz);
+        return testRepository.save(existingQuiz);
     }
 
     @Transactional

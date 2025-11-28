@@ -2,11 +2,7 @@ package com.bm.education.services;
 
 import com.bm.education.exceptions.LessonAlreadyCompletedException;
 import com.bm.education.models.*;
-import com.bm.education.repositories.LessonRepository;
-import com.bm.education.repositories.UserCourseCompletionRepository;
-import com.bm.education.repositories.UserCoursesRepository;
-import com.bm.education.repositories.UserProgressRepository;
-import com.bm.education.repositories.UserRepository;
+import com.bm.education.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service

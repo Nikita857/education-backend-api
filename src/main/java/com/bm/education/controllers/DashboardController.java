@@ -1,5 +1,9 @@
 package com.bm.education.controllers;
 
+import com.bm.education.dto.common.ApiResponse;
+import com.bm.education.dto.dashboard.InstructorDashboardDto;
+import com.bm.education.dto.dashboard.LearnerDashboardDto;
+import com.bm.education.services.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,31 +14,37 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DashboardController {
 
+    private final DashboardService dashboardService;
+
     @GetMapping("/learner")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Object> getLearnerDashboard() {
-        // Implementation for learner dashboard
-        return ResponseEntity.ok(new Object()); // Placeholder
+    public ResponseEntity<ApiResponse<LearnerDashboardDto>> getLearnerDashboard() {
+        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+        LearnerDashboardDto dashboard = dashboardService.getLearnerDashboard(username);
+        return ResponseEntity.ok(ApiResponse.success(dashboard));
     }
 
     @GetMapping("/instructor")
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    public ResponseEntity<Object> getInstructorDashboard() {
-        // Implementation for instructor dashboard
-        return ResponseEntity.ok(new Object()); // Placeholder
+    public ResponseEntity<ApiResponse<InstructorDashboardDto>> getInstructorDashboard() {
+        String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+        InstructorDashboardDto dashboard = dashboardService.getInstructorDashboard(username);
+        return ResponseEntity.ok(ApiResponse.success(dashboard));
     }
 
     @GetMapping("/manager")
     @PreAuthorize("hasRole('MANAGER')")
-    public ResponseEntity<Object> getManagerDashboard() {
-        // Implementation for manager dashboard
-        return ResponseEntity.ok(new Object()); // Placeholder
+    public ResponseEntity<ApiResponse<Object>> getManagerDashboard() {
+        Object dashboard = dashboardService.getManagerDashboard();
+        return ResponseEntity.ok(ApiResponse.success(dashboard));
     }
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> getAdminDashboard() {
-        // Implementation for admin dashboard
-        return ResponseEntity.ok(new Object()); // Placeholder
+    public ResponseEntity<ApiResponse<Object>> getAdminDashboard() {
+        Object dashboard = dashboardService.getAdminDashboard();
+        return ResponseEntity.ok(ApiResponse.success(dashboard));
     }
 }
