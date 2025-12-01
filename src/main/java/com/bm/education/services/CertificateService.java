@@ -31,23 +31,27 @@ public class CertificateService {
 
     @Transactional(readOnly = true)
     public List<Certificate> getUserCertificates(String username) {
-        List<Certificate> certificates = certificateRepository.findCertificatesByUserId(userService.findByUsername(username).getId());
+        List<Certificate> certificates = certificateRepository
+                .findByUserId(userService.findByUsername(username).getId());
         return !certificates.isEmpty() ? certificates : Collections.emptyList();
     }
 
     @Transactional(readOnly = true)
     public Certificate getCertificateByUserIdAndCourseId(String username, Integer courseId) {
         Integer userId = userService.findByUsername(username).getId();
-        return certificateRepository.findCertificateByUserIdAndCourseId(userId, courseId).orElseThrow(() -> new EntityNotFoundException("Certificate not found for user ID: " + userId + " and course ID: " + courseId));
+        return certificateRepository.findByUserIdAndCourseId(userId, courseId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Certificate not found for user ID: " + userId + " and course ID: " + courseId));
     }
 
     @Transactional
     public Certificate generateCertificate(String username, Integer courseId) {
         User user = userService.findByUsername(username);
-        Course course = courseRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException("Course not found: " + courseId));
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + courseId));
 
         // Check if certificate already exists
-        if (certificateRepository.findCertificateByUserIdAndCourseId(user.getId(), courseId).isPresent()) {
+        if (certificateRepository.findByUserIdAndCourseId(user.getId(), courseId).isPresent()) {
             // Ideally return existing certificate, but for now let's throw or just return a
             // new one?
             // Let's assume re-generation is allowed or we just return the existing one if
@@ -59,13 +63,15 @@ public class CertificateService {
         try {
             byte[] certificateImage = createCertificateImage(user, course);
             String fileName = "certificate_" + user.getId() + "_" + course.getId() + ".png";
-            FileUploadResponse fileResponse = fileService.storeGeneratedFile(certificateImage, fileName, "image/png", username);
+            FileUploadResponse fileResponse = fileService.storeGeneratedFile(certificateImage, fileName, "image/png",
+                    username);
 
             Certificate certificate = new Certificate();
             certificate.setUser(user);
             certificate.setCourse(course);
             certificate.setTitle("Certificate of Completion: " + course.getTitle());
-            certificate.setDescription("Awarded to " + user.getFirstName() + " " + user.getLastName() + " for completing " + course.getTitle());
+            certificate.setDescription("Awarded to " + user.getFirstName() + " " + user.getLastName()
+                    + " for completing " + course.getTitle());
             certificate.setCertificateNumber(UUID.randomUUID().toString());
             certificate.setCertificateFilePath(fileResponse.getFileId()); // Storing File ID as path for retrieval
             certificate.setCertificateUrl("/api/v1/files/" + fileResponse.getFileId());

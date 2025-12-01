@@ -11,4 +11,8 @@ import java.util.Optional;
 @Repository
 public interface UserCourseCompletionRepository extends JpaRepository<UserCourseCompletion, Long> {
     Optional<UserCourseCompletion> findByUserAndCourse(User user, Course course);
+
+    long countByCourseId(Integer courseId);
+
+    long countByUserId(Integer userId);
 }

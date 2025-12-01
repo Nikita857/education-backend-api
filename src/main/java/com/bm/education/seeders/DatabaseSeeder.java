@@ -1,14 +1,15 @@
 package com.bm.education.seeders;
 
 import com.bm.education.models.*;
+import com.bm.education.models.AdaptationProgram.ProgramStatus;
 import com.bm.education.models.Module;
 import com.bm.education.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +27,13 @@ public class DatabaseSeeder {
     private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final UserSkillRepository userSkillRepository;
+    private final AdaptationProgramRepository adaptationProgramRepository;
+    private final UserProgressRepository userProgressRepository;
+    private final CertificateRepository certificateRepository;
+    private final SkillRepository skillRepository;
+    private final UserCourseCompletionRepository userCourseCompletionRepository;
+
     public void seedDatabase() {
         if (userRepository.count() == 0) {
             createDefaultUsers();
@@ -33,12 +41,10 @@ public class DatabaseSeeder {
         if (courseRepository.count() == 0) {
             createDefaultCourses();
         }
-        if (courseReviewRepository.count() == 0 && discussionTopicRepository.count() == 0) {
-            seedExtraData();
-        }
     }
 
     private void createDefaultUsers() {
+        // ... (existing code) ...
         // Создаем администратора
         User admin = new User();
         admin.setFirstName("Админ");
@@ -98,6 +104,7 @@ public class DatabaseSeeder {
     }
 
     private void createDefaultCourses() {
+        // ... (existing code) ...
         // Курс 1: Основы программирования
         Course course1 = createCourse(
                 "Основы программирования",
@@ -105,26 +112,38 @@ public class DatabaseSeeder {
                 "osnovy-programmirovaniya",
                 40,
                 CourseStatus.ACTIVE,
-                CourseDifficultyLevel.BEGINNER
-        );
+                CourseDifficultyLevel.BEGINNER);
 
         Module module1_1 = createModule(course1, "Введение в программирование", "vvedenie-v-programmirovanie");
-        createLesson(module1_1, "Что такое программирование", "Введение в понятие программирования и его основные концепции.", "Введение", LessonContentType.VIDEO, "Это урок в формате видео.", 15);
-        createLesson(module1_1, "Переменные и типы данных", "Основы работы с переменными и различными типами данных.", "Переменные", LessonContentType.TEXT, "Это текстовый урок о переменных.", 20);
-        Lesson lesson1_1_3 = createLesson(module1_1, "Операторы и выражения", "Изучение различных операторов и создания выражений.", "Операторы", LessonContentType.VIDEO, "Видео-урок об операторах.", 25);
-        createTest(lesson1_1_3, "Тест по основам программирования", "Проверьте свои знания по основам программирования", 70, 30, 3, true, true, "программирование");
+        createLesson(module1_1, "Что такое программирование",
+                "Введение в понятие программирования и его основные концепции.", "Введение", LessonContentType.VIDEO,
+                "Это урок в формате видео.", 15);
+        createLesson(module1_1, "Переменные и типы данных", "Основы работы с переменными и различными типами данных.",
+                "Переменные", LessonContentType.TEXT, "Это текстовый урок о переменных.", 20);
+        Lesson lesson1_1_3 = createLesson(module1_1, "Операторы и выражения",
+                "Изучение различных операторов и создания выражений.", "Операторы", LessonContentType.VIDEO,
+                "Видео-урок об операторах.", 25);
+        createTest(lesson1_1_3, "Тест по основам программирования", "Проверьте свои знания по основам программирования",
+                70, 30, 3, true, true, "программирование");
 
         Module module1_2 = createModule(course1, "Управляющие структуры", "upravlyayushchie-struktury");
-        createLesson(module1_2, "Условные операторы", "Изучение if-else конструкций и switch-case.", "Условия", LessonContentType.VIDEO, "Видео об if-else.", 20);
-        createLesson(module1_2, "Циклы", "Работа с циклами for, while, do-while.", "Циклы", LessonContentType.TEXT, "Текстовый урок о циклах.", 30);
-        Lesson lesson1_2_3 = createLesson(module1_2, "Вложенные циклы", "Использование циклов внутри циклов.", "Вложенные циклы", LessonContentType.VIDEO, "Видео о вложенных циклах.", 25);
-        createTest(lesson1_2_3, "Тест по управляющим структурам", "Проверка знаний по условиям и циклам", 75, 25, 3, true, true, "программирование");
+        createLesson(module1_2, "Условные операторы", "Изучение if-else конструкций и switch-case.", "Условия",
+                LessonContentType.VIDEO, "Видео об if-else.", 20);
+        createLesson(module1_2, "Циклы", "Работа с циклами for, while, do-while.", "Циклы", LessonContentType.TEXT,
+                "Текстовый урок о циклах.", 30);
+        Lesson lesson1_2_3 = createLesson(module1_2, "Вложенные циклы", "Использование циклов внутри циклов.",
+                "Вложенные циклы", LessonContentType.VIDEO, "Видео о вложенных циклах.", 25);
+        createTest(lesson1_2_3, "Тест по управляющим структурам", "Проверка знаний по условиям и циклам", 75, 25, 3,
+                true, true, "программирование");
 
         Module module1_3 = createModule(course1, "Функции и методы", "funktsii-i-metody");
-        createLesson(module1_3, "Создание функций", "Изучение создания и использования функций.", "Функции", LessonContentType.VIDEO, "Видео о функциях.", 30);
-        Lesson lesson1_3_2 = createLesson(module1_3, "Параметры и возврат значений", "Работа с параметрами функций и возвратом значений.", "Параметры", LessonContentType.TEXT, "Текст о параметрах.", 25);
-        createTest(lesson1_3_2, "Итоговый тест по функциям", "Финальная проверка знаний по функциям", 80, 30, 2, false, true, "программирование");
-
+        createLesson(module1_3, "Создание функций", "Изучение создания и использования функций.", "Функции",
+                LessonContentType.VIDEO, "Видео о функциях.", 30);
+        Lesson lesson1_3_2 = createLesson(module1_3, "Параметры и возврат значений",
+                "Работа с параметрами функций и возвратом значений.", "Параметры", LessonContentType.TEXT,
+                "Текст о параметрах.", 25);
+        createTest(lesson1_3_2, "Итоговый тест по функциям", "Финальная проверка знаний по функциям", 80, 30, 2, false,
+                true, "программирование");
 
         // Курс 2: Информационная безопасность
         Course course2 = createCourse(
@@ -133,25 +152,114 @@ public class DatabaseSeeder {
                 "info-bezopasnost",
                 30,
                 CourseStatus.ACTIVE,
-                CourseDifficultyLevel.INTERMEDIATE
-        );
+                CourseDifficultyLevel.INTERMEDIATE);
 
         Module module2_1 = createModule(course2, "Основы информационной безопасности", "osnovy-info-bezopasnosti");
-        createLesson(module2_1, "Введение в информационную безопасность", "Основные понятия и принципы.", "Основы", LessonContentType.TEXT, "Текст об основах.", 20);
-        createLesson(module2_1, "Угрозы информационной безопасности", "Основные типы угроз и методы их классификации.", "Угрозы", LessonContentType.VIDEO, "Видео об угрозах.", 25);
-        Lesson lesson2_1_3 = createLesson(module2_1, "Модели безопасности", "Изучение различных моделей обеспечения безопасности.", "Модели", LessonContentType.TEXT, "Текст о моделях.", 30);
-        createTest(lesson2_1_3, "Тест по основам ИБ", "Проверка базовых знаний", 70, 30, 3, true, false, "безопасность");
+        createLesson(module2_1, "Введение в информационную безопасность", "Основные понятия и принципы.", "Основы",
+                LessonContentType.TEXT, "Текст об основах.", 20);
+        createLesson(module2_1, "Угрозы информационной безопасности", "Основные типы угроз и методы их классификации.",
+                "Угрозы", LessonContentType.VIDEO, "Видео об угрозах.", 25);
+        Lesson lesson2_1_3 = createLesson(module2_1, "Модели безопасности",
+                "Изучение различных моделей обеспечения безопасности.", "Модели", LessonContentType.TEXT,
+                "Текст о моделях.", 30);
+        createTest(lesson2_1_3, "Тест по основам ИБ", "Проверка базовых знаний", 70, 30, 3, true, false,
+                "безопасность");
 
         Module module2_2 = createModule(course2, "Криптография", "kriptografiya");
-        createLesson(module2_2, "Симметричное шифрование", "Принципы симметричного шифрования.", "Симметричное", LessonContentType.TEXT, "Текст о симметричном шифровании.", 25);
-        createLesson(module2_2, "Асимметричное шифрование", "Основы асимметричной криптографии.", "Асимметричное", LessonContentType.VIDEO, "Видео об ассиметричном шифровании.", 30);
-        Lesson lesson2_2_3 = createLesson(module2_2, "Хеширование и цифровые подписи", "Использование хеш-функций и электронных подписей.", "Хеширование", LessonContentType.TEXT, "Текст о хешировании.", 20);
-        createTest(lesson2_2_3, "Тест по криптографии", "Проверка знаний по криптографическим методам", 80, 35, 3, true, true, "криптография");
+        createLesson(module2_2, "Симметричное шифрование", "Принципы симметричного шифрования.", "Симметричное",
+                LessonContentType.TEXT, "Текст о симметричном шифровании.", 25);
+        createLesson(module2_2, "Асимметричное шифрование", "Основы асимметричной криптографии.", "Асимметричное",
+                LessonContentType.VIDEO, "Видео об ассиметричном шифровании.", 30);
+        Lesson lesson2_2_3 = createLesson(module2_2, "Хеширование и цифровые подписи",
+                "Использование хеш-функций и электронных подписей.", "Хеширование", LessonContentType.TEXT,
+                "Текст о хешировании.", 20);
+        createTest(lesson2_2_3, "Тест по криптографии", "Проверка знаний по криптографическим методам", 80, 35, 3, true,
+                true, "криптография");
 
     }
 
+    private void createDefaultUserSkills() {
+        User user = userRepository.findByUsername("user_1").orElseThrow();
+        List<Skill> skills = skillRepository.findAll();
+
+        if (!skills.isEmpty()) {
+            UserSkill userSkill = new UserSkill();
+            userSkill.setUser(user);
+            userSkill.setSkill(skills.get(0));
+            userSkill.setProficiencyLevel(3);
+            userSkill.setAssessmentMethod(AssessmentMethod.SELF);
+            userSkill.setLastAssessed(java.time.Instant.now());
+            userSkillRepository.save(userSkill);
+        }
+    }
+
+    private void createDefaultAdaptationPrograms() {
+        User user = userRepository.findByUsername("user_1").orElseThrow();
+        User mentor = userRepository.findByUsername("instructor").orElseThrow();
+
+        AdaptationProgram program = new AdaptationProgram();
+        program.setTitle("Onboarding for New Developer");
+        program.setDescription("Complete the basic programming course and security basics.");
+        program.setAssignedTo(user);
+        program.setMentor(mentor);
+        program.setStartDate(java.time.Instant.now());
+        program.setEndDate(java.time.Instant.now().plus(30, java.time.temporal.ChronoUnit.DAYS));
+        program.setStatus(ProgramStatus.IN_PROGRESS);
+        adaptationProgramRepository.save(program);
+    }
+
+    private void createDefaultUserProgress() {
+        User user = userRepository.findByUsername("user_1").orElseThrow();
+        Course course = courseRepository.findBySlug("osnovy-programmirovaniya").orElseThrow();
+
+        // Mark first lesson as completed
+        List<Module> modules = moduleRepository.findByCourseId(course.getId());
+        if (modules.isEmpty())
+            return;
+        Module module = modules.get(0);
+
+        List<Lesson> lessons = lessonRepository.findByModuleId(module.getId());
+        if (lessons.isEmpty())
+            return;
+        Lesson lesson = lessons.get(0);
+
+        UserProgress progress = new UserProgress();
+        progress.setUser(user);
+        progress.setCourse(course);
+        progress.setModule(module);
+        progress.setLesson(lesson);
+        progress.setStatus(UserProgressStatus.COMPLETED);
+        progress.setCompletedAt(java.time.Instant.now());
+        userProgressRepository.save(progress);
+    }
+
+    private void createDefaultCertificates() {
+        User user = userRepository.findByUsername("user_1").orElseThrow();
+        Course course = courseRepository.findBySlug("osnovy-programmirovaniya").orElseThrow();
+
+        // Simulate course completion
+        UserCourseCompletion completion = new UserCourseCompletion();
+        completion.setUser(user);
+        completion.setCourse(course);
+        completion.setCompletionDate(LocalDateTime.now());
+        completion.setScore(95.0);
+        userCourseCompletionRepository.save(completion);
+
+        Certificate certificate = new Certificate();
+        certificate.setUser(user);
+        certificate.setCourse(course);
+        certificate.setTitle("Certificate of Completion: " + course.getTitle());
+        certificate.setDescription("Awarded for completing " + course.getTitle());
+        certificate.setCertificateNumber(UUID.randomUUID().toString());
+        certificate.setCertificateUrl("/api/v1/certificates/download/1");
+        certificate.setCertificateFilePath("path/to/cert.pdf");
+        certificateRepository.save(certificate);
+    }
+
+    // ... (existing helper methods: createCourse, createModule, createLesson,
+    // createTest, createQuestionsForTest, etc.) ...
     private Course createCourse(String title, String description, String slug, Integer durationHours,
-                                CourseStatus status, CourseDifficultyLevel difficultyLevel) {
+            CourseStatus status, CourseDifficultyLevel difficultyLevel) {
         Course course = new Course();
         course.setTitle(title);
         course.setDescription(description);
@@ -172,7 +280,7 @@ public class DatabaseSeeder {
     }
 
     private Lesson createLesson(Module module, String title, String description, String shortDescription,
-                                LessonContentType contentType, String textContent, Integer estimatedMinutes) {
+            LessonContentType contentType, String textContent, Integer estimatedMinutes) {
         Lesson lesson = new Lesson();
         lesson.setTitle(title);
         lesson.setDescription(description);
@@ -185,8 +293,8 @@ public class DatabaseSeeder {
     }
 
     private Test createTest(Lesson lesson, String title, String description, Integer passingScore,
-                            Integer timeLimitMinutes, Integer maxAttempts, Boolean randomizeQuestions,
-                            Boolean showCorrectAnswers, String questionTopic) {
+            Integer timeLimitMinutes, Integer maxAttempts, Boolean randomizeQuestions,
+            Boolean showCorrectAnswers, String questionTopic) {
         Test test = new Test();
         test.setTitle(title);
         test.setDescription(description);
@@ -226,7 +334,8 @@ public class DatabaseSeeder {
         createAnswerOption(q1, "Тип данных", false);
         createAnswerOption(q1, "Оператор", false);
 
-        Question q2 = createQuestion(test, "Какие из следующих являются типами данных?", QuestionType.MULTIPLE_CHOICE, 2);
+        Question q2 = createQuestion(test, "Какие из следующих являются типами данных?", QuestionType.MULTIPLE_CHOICE,
+                2);
         createAnswerOption(q2, "Целое число (int)", true);
         createAnswerOption(q2, "Строка (string)", true);
         createAnswerOption(q2, "Переменная", false);
