@@ -1,10 +1,10 @@
-package com.bm.education.services;
+package com.bm.education.lesson.service;
 
 import com.bm.education.dto.course.LessonDto;
-import com.bm.education.mapper.LessonMapper;
-import com.bm.education.models.Lesson;
+import com.bm.education.lesson.mapper.LessonMapper;
+import com.bm.education.lesson.model.Lesson;
 import com.bm.education.module.model.Module;
-import com.bm.education.repositories.LessonRepository;
+import com.bm.education.lesson.repository.LessonRepository;
 import com.bm.education.module.repository.ModuleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

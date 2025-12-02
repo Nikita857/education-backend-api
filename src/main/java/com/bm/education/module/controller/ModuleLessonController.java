@@ -1,10 +1,10 @@
-package com.bm.education.controllers;
+package com.bm.education.module.controller;
 
-import com.bm.education.dto.common.ApiResponse;
+import com.bm.education.api.type.template.ApiResponse;
 import com.bm.education.dto.course.LessonDto;
 import com.bm.education.dto.course.ModuleDto;
-import com.bm.education.services.LessonService;
-import com.bm.education.services.ModuleService;
+import com.bm.education.lesson.service.LessonService;
+import com.bm.education.module.service.ModuleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

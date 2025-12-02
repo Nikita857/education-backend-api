@@ -1,11 +1,12 @@
-package com.bm.education.controllers;
+package com.bm.education.course.controller;
 
-import com.bm.education.dto.common.ApiResponse;
+import com.bm.education.course.model.CourseReview;
+import com.bm.education.api.type.template.ApiResponse;
 import com.bm.education.dto.course.CourseReviewDto;
 import com.bm.education.dto.course.CourseReviewRequest;
-import com.bm.education.services.CourseReviewService;
+import com.bm.education.course.service.CourseReviewService;
 import lombok.RequiredArgsConstructor;
-import com.bm.education.mapper.CourseReviewMapper;
+import com.bm.education.course.mapper.CourseReviewMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CourseReviewController {
                         @RequestBody CourseReviewRequest courseReviewRequest) {
                 String username = org.springframework.security.core.context.SecurityContextHolder.getContext()
                                 .getAuthentication().getName();
-                com.bm.education.models.CourseReview courseReview = courseReviewService.createCourseReview(
+                CourseReview courseReview = courseReviewService.createCourseReview(
                                 courseId,
                                 courseReviewRequest.getRating(),
                                 courseReviewRequest.getComment(),

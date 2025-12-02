@@ -3,12 +3,11 @@ package com.bm.education.services;
 import com.bm.education.dto.skill.SkillAssessmentRequest;
 import com.bm.education.models.AssessmentMethod;
 import com.bm.education.models.Skill;
-import com.bm.education.models.User;
+import com.bm.education.user.model.User;
 import com.bm.education.models.UserSkill;
 import com.bm.education.repositories.SkillRepository;
-import com.bm.education.repositories.UserRepository;
+import com.bm.education.user.repository.UserRepository;
 import com.bm.education.repositories.UserSkillRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

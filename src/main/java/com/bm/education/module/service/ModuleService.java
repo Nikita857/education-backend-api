@@ -1,4 +1,4 @@
-package com.bm.education.services;
+package com.bm.education.module.service;
 
 import com.bm.education.dto.course.ModuleDto;
 import com.bm.education.module.mapper.ModuleMapper;

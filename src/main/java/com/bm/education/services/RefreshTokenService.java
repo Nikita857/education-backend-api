@@ -1,10 +1,10 @@
 package com.bm.education.services;
 
-import com.bm.education.exceptions.ExpiredTokenException;
+import com.bm.education.api.exception.custom.ExpiredTokenException;
 import com.bm.education.models.RefreshToken;
-import com.bm.education.models.User;
+import com.bm.education.user.model.User;
 import com.bm.education.repositories.RefreshTokenRepository;
-import com.bm.education.repositories.UserRepository;
+import com.bm.education.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;

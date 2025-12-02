@@ -1,4 +1,4 @@
-package com.bm.education.dto.common;
+package com.bm.education.api.type.template;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

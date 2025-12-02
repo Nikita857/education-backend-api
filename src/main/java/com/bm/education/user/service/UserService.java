@@ -1,12 +1,12 @@
-package com.bm.education.services;
+package com.bm.education.user.service;
 
 import com.bm.education.auth.dto.create.RegisterRequest;
-import com.bm.education.dto.common.PageResponse;
+import com.bm.education.api.type.page.PageResponse;
 import com.bm.education.dto.user.UserDto;
-import com.bm.education.mapper.UserMapper;
+import com.bm.education.user.mapper.UserMapper;
 import com.bm.education.models.Role;
-import com.bm.education.models.User;
-import com.bm.education.repositories.UserRepository;
+import com.bm.education.user.model.User;
+import com.bm.education.user.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

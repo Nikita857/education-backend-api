@@ -1,5 +1,8 @@
-package com.bm.education.models;
+package com.bm.education.module.model;
 
+import com.bm.education.course.model.Course;
+import com.bm.education.lesson.model.Lesson;
+import com.bm.education.models.UserProgress;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

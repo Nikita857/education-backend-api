@@ -1,12 +1,14 @@
-package com.bm.education.services;
+package com.bm.education.auth.service;
 
-import com.bm.education.dto.auth.AuthRequest;
-import com.bm.education.dto.auth.AuthResponse;
-import com.bm.education.dto.auth.RefreshTokenRequest;
-import com.bm.education.dto.auth.RegisterRequest;
+import com.bm.education.auth.dto.AuthRequest;
+import com.bm.education.auth.dto.read.AuthResponse;
+import com.bm.education.auth.dto.refresh.RefreshTokenRequest;
+import com.bm.education.auth.dto.create.RegisterRequest;
 import com.bm.education.models.RefreshToken;
-import com.bm.education.models.User;
+import com.bm.education.user.model.User;
 import com.bm.education.security.jwt.JwtService;
+import com.bm.education.services.RefreshTokenService;
+import com.bm.education.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.AuthenticationManager;

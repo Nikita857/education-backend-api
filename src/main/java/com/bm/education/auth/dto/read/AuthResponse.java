@@ -1,4 +1,4 @@
-package com.bm.education.dto.auth;
+package com.bm.education.auth.dto.read;
 
 import com.bm.education.dto.user.UserDto;
 import lombok.AllArgsConstructor;

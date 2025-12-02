@@ -1,4 +1,4 @@
-package com.bm.education.models;
+package com.bm.education.course.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

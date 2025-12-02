@@ -1,6 +1,6 @@
-package com.bm.education.repositories;
+package com.bm.education.certificate.repository;
 
-import com.bm.education.models.Certificate;
+import com.bm.education.certificate.model.Certificate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

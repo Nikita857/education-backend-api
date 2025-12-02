@@ -1,7 +1,7 @@
-package com.bm.education.mapper;
+package com.bm.education.course.mapper;
 
 import com.bm.education.dto.course.CourseReviewDto;
-import com.bm.education.models.CourseReview;
+import com.bm.education.course.model.CourseReview;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

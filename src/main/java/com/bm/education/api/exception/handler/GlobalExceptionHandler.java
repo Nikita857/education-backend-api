@@ -1,8 +1,8 @@
-package com.bm.education.exception;
+package com.bm.education.api.exception.handler;
 
-import com.bm.education.dto.common.ApiResponse;
-import com.bm.education.exceptions.LessonAlreadyCompletedException;
-import com.bm.education.exceptions.ReviewDuplicateException;
+import com.bm.education.api.type.template.ApiResponse;
+import com.bm.education.api.exception.custom.LessonAlreadyCompletedException;
+import com.bm.education.api.exception.custom.ReviewDuplicateException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.bm.education.controllers;
 
-import com.bm.education.dto.common.ApiResponse;
+import com.bm.education.api.type.template.ApiResponse;
 import com.bm.education.dto.skill.SkillDto;
 import com.bm.education.dto.skill.SkillAssessmentRequest;
 import com.bm.education.dto.skill.UserSkillDto;

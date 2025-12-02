@@ -1,10 +1,9 @@
 package com.bm.education.services;
 
 import com.bm.education.models.AdaptationProgram;
-import com.bm.education.models.User;
+import com.bm.education.user.model.User;
 import com.bm.education.repositories.AdaptationProgramRepository;
-import com.bm.education.repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.bm.education.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

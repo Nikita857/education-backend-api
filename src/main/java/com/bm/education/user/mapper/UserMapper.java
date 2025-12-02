@@ -1,7 +1,7 @@
-package com.bm.education.mapper;
+package com.bm.education.user.mapper;
 
 import com.bm.education.dto.user.UserDto;
-import com.bm.education.models.User;
+import com.bm.education.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

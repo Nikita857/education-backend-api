@@ -1,4 +1,4 @@
-package com.bm.education.models;
+package com.bm.education.lesson.model;
 
 public enum LessonContentType {
     TEXT,

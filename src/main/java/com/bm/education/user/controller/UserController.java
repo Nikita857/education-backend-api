@@ -1,12 +1,12 @@
-package com.bm.education.controllers;
+package com.bm.education.user.controller;
 
-import com.bm.education.dto.common.ApiResponse;
-import com.bm.education.dto.common.PageResponse;
+import com.bm.education.api.type.template.ApiResponse;
+import com.bm.education.api.type.page.PageResponse;
 import com.bm.education.dto.course.CourseDto;
 import com.bm.education.dto.user.UserDto;
-import com.bm.education.models.User;
+import com.bm.education.user.model.User;
 import com.bm.education.course.service.CourseService;
-import com.bm.education.services.UserService;
+import com.bm.education.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

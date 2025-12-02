@@ -1,11 +1,13 @@
-package com.bm.education.services;
+package com.bm.education.certificate.service;
 
 import com.bm.education.dto.FileUploadResponse;
-import com.bm.education.models.Certificate;
-import com.bm.education.models.Course;
-import com.bm.education.models.User;
-import com.bm.education.repositories.CertificateRepository;
-import com.bm.education.repositories.CourseRepository;
+import com.bm.education.certificate.model.Certificate;
+import com.bm.education.course.model.Course;
+import com.bm.education.user.model.User;
+import com.bm.education.certificate.repository.CertificateRepository;
+import com.bm.education.course.repository.CourseRepository;
+import com.bm.education.services.FileService;
+import com.bm.education.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

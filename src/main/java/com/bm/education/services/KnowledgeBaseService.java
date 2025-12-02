@@ -1,10 +1,11 @@
 package com.bm.education.services;
 
 import com.bm.education.models.BlogPost;
-import com.bm.education.models.Comment;
-import com.bm.education.models.User;
+import com.bm.education.comment.model.Comment;
+import com.bm.education.user.model.User;
 import com.bm.education.repositories.BlogPostRepository;
 import com.bm.education.repositories.CommentRepository;
+import com.bm.education.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

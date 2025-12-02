@@ -1,9 +1,10 @@
-package com.bm.education.repositories;
+package com.bm.education.course.repository;
 
 import java.util.Optional;
 
-import com.bm.education.models.Course;
+import com.bm.education.course.model.Course;
 
+import com.bm.education.course.model.CourseStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Integer> {
-        Page<Course> findAllByStatus(com.bm.education.models.CourseStatus status,
-                        Pageable pageable);
+        Page<Course> findAllByStatus(CourseStatus status,
+                                     Pageable pageable);
 
         @Query("SELECT c FROM Course c WHERE c.category.slug = :slug AND c.status = 'ACTIVE'")
         Page<Course> findByCategorySlug(@org.springframework.data.repository.query.Param("slug") String slug,

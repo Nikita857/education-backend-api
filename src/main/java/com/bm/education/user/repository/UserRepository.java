@@ -1,7 +1,7 @@
-package com.bm.education.repositories;
+package com.bm.education.user.repository;
 
 import com.bm.education.dto.user.UserDto;
-import com.bm.education.models.User;
+import com.bm.education.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

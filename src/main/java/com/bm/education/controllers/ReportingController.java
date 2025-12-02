@@ -1,6 +1,6 @@
 package com.bm.education.controllers;
 
-import com.bm.education.dto.common.ApiResponse;
+import com.bm.education.api.type.template.ApiResponse;
 import com.bm.education.dto.report.UserProgressReport;
 import com.bm.education.services.ReportingService;
 import lombok.RequiredArgsConstructor;

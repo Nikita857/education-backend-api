@@ -1,12 +1,12 @@
-package com.bm.education.controllers;
+package com.bm.education.auth.controller;
 
-import com.bm.education.dto.auth.AuthRequest;
-import com.bm.education.dto.auth.AuthResponse;
-import com.bm.education.dto.auth.RefreshTokenRequest;
-import com.bm.education.dto.auth.RegisterRequest;
-import com.bm.education.dto.common.ApiResponse;
-import com.bm.education.models.User;
-import com.bm.education.services.AuthService;
+import com.bm.education.auth.dto.AuthRequest;
+import com.bm.education.auth.dto.read.AuthResponse;
+import com.bm.education.auth.dto.refresh.RefreshTokenRequest;
+import com.bm.education.auth.dto.create.RegisterRequest;
+import com.bm.education.api.type.template.ApiResponse;
+import com.bm.education.user.model.User;
+import com.bm.education.auth.service.AuthService;
 import com.bm.education.services.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

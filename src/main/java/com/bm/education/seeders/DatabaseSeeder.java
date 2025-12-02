@@ -1,13 +1,32 @@
 package com.bm.education.seeders;
 
+import com.bm.education.certificate.model.Certificate;
+import com.bm.education.certificate.repository.CertificateRepository;
+import com.bm.education.comment.model.Comment;
+import com.bm.education.course.model.Course;
+import com.bm.education.course.model.CourseDifficultyLevel;
+import com.bm.education.course.model.CourseReview;
+import com.bm.education.course.model.CourseStatus;
+import com.bm.education.course.repository.CourseRepository;
+import com.bm.education.course.repository.CourseReviewRepository;
+import com.bm.education.lesson.model.Lesson;
+import com.bm.education.lesson.model.LessonContentType;
+import com.bm.education.lesson.repository.LessonRepository;
 import com.bm.education.models.*;
 import com.bm.education.models.AdaptationProgram.ProgramStatus;
-import com.bm.education.models.Module;
+import com.bm.education.module.model.Module;
+import com.bm.education.module.model.ModuleStatus;
+import com.bm.education.module.repository.ModuleRepository;
 import com.bm.education.repositories.*;
+import com.bm.education.user.model.User;
+import com.bm.education.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

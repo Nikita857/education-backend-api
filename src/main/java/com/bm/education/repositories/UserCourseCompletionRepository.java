@@ -1,7 +1,7 @@
 package com.bm.education.repositories;
 
-import com.bm.education.models.Course;
-import com.bm.education.models.User;
+import com.bm.education.course.model.Course;
+import com.bm.education.user.model.User;
 import com.bm.education.models.UserCourseCompletion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

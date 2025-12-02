@@ -1,6 +1,6 @@
-package com.bm.education.repositories;
+package com.bm.education.course.repository;
 
-import com.bm.education.models.CourseCategory;
+import com.bm.education.course.model.CourseCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

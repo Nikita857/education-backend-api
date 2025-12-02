@@ -1,5 +1,6 @@
-package com.bm.education.models;
+package com.bm.education.module.model;
 
+import com.bm.education.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;

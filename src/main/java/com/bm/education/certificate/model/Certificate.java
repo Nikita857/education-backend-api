@@ -1,5 +1,7 @@
-package com.bm.education.models;
+package com.bm.education.certificate.model;
 
+import com.bm.education.course.model.Course;
+import com.bm.education.user.model.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

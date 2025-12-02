@@ -1,5 +1,6 @@
-package com.bm.education.models;
+package com.bm.education.lesson.model;
 
+import com.bm.education.models.UserProgress;
 import com.bm.education.module.model.Module;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

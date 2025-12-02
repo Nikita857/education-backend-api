@@ -1,8 +1,13 @@
 package com.bm.education.services;
 
-import com.bm.education.exceptions.LessonAlreadyCompletedException;
+import com.bm.education.course.model.Course;
+import com.bm.education.api.exception.custom.LessonAlreadyCompletedException;
+import com.bm.education.lesson.model.Lesson;
+import com.bm.education.lesson.repository.LessonRepository;
 import com.bm.education.models.*;
 import com.bm.education.repositories.*;
+import com.bm.education.user.model.User;
+import com.bm.education.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

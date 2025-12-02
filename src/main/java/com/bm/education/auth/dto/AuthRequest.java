@@ -1,4 +1,4 @@
-package com.bm.education.dto.auth;
+package com.bm.education.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

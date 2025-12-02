@@ -1,10 +1,11 @@
 package com.bm.education.services;
 
+import com.bm.education.course.repository.CourseRepository;
 import com.bm.education.dto.report.UserProgressReport;
+import com.bm.education.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -13,8 +14,8 @@ public class ReportingService {
 
     private final com.bm.education.repositories.UserProgressRepository userProgressRepository;
     private final com.bm.education.repositories.UserCourseCompletionRepository userCourseCompletionRepository;
-    private final com.bm.education.repositories.CourseRepository courseRepository;
-    private final com.bm.education.repositories.UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<UserProgressReport> getUserProgressReport(String department, int page, int size) {

@@ -1,5 +1,6 @@
-package com.bm.education.models;
+package com.bm.education.course.model;
 
+import com.bm.education.user.model.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

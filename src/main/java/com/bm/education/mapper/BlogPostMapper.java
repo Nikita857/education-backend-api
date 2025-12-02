@@ -3,6 +3,7 @@ package com.bm.education.mapper;
 import com.bm.education.dto.content.BlogPostDto;
 import com.bm.education.models.BlogPost;
 import com.bm.education.models.Tag;
+import com.bm.education.user.mapper.UserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

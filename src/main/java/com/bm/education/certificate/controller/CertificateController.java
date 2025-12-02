@@ -1,11 +1,11 @@
-package com.bm.education.controllers;
+package com.bm.education.certificate.controller;
 
-import com.bm.education.dto.certificate.CertificateDto;
-import com.bm.education.dto.common.ApiResponse;
-import com.bm.education.mapper.CertificateMapper;
-import com.bm.education.models.Certificate;
-import com.bm.education.models.User;
-import com.bm.education.services.CertificateService;
+import com.bm.education.certificate.dto.create.CertificateDto;
+import com.bm.education.api.type.template.ApiResponse;
+import com.bm.education.certificate.mapper.CertificateMapper;
+import com.bm.education.certificate.model.Certificate;
+import com.bm.education.user.model.User;
+import com.bm.education.certificate.service.CertificateService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;

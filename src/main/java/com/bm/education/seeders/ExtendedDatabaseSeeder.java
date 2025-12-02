@@ -1,5 +1,7 @@
 package com.bm.education.seeders;
 
+import com.bm.education.course.model.CourseCategory;
+import com.bm.education.course.repository.CourseCategoryRepository;
 import com.bm.education.models.*;
 import com.bm.education.repositories.*;
 import lombok.RequiredArgsConstructor;

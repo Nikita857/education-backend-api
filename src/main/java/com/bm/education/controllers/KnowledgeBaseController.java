@@ -1,13 +1,13 @@
 package com.bm.education.controllers;
 
-import com.bm.education.dto.common.ApiResponse;
-import com.bm.education.dto.common.PageResponse;
+import com.bm.education.api.type.template.ApiResponse;
+import com.bm.education.api.type.page.PageResponse;
 import com.bm.education.dto.content.BlogPostDto;
 import com.bm.education.dto.discussion.CommentDto;
 import com.bm.education.mapper.BlogPostMapper;
 import com.bm.education.mapper.DiscussionMapper;
 import com.bm.education.models.BlogPost;
-import com.bm.education.models.Comment;
+import com.bm.education.comment.model.Comment;
 import com.bm.education.services.KnowledgeBaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

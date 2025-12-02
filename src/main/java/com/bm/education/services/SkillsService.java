@@ -4,7 +4,8 @@ import com.bm.education.dto.skill.SkillAssessmentRequest;
 import com.bm.education.models.Skill;
 import com.bm.education.models.UserSkill;
 import com.bm.education.repositories.SkillRepository;
-import com.bm.education.repositories.UserRepository;
+import com.bm.education.user.model.User;
+import com.bm.education.user.repository.UserRepository;
 import com.bm.education.repositories.UserSkillRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -42,14 +43,14 @@ public class SkillsService {
 
     @Transactional(readOnly = true)
     public List<UserSkill> getUserSkills(String username) {
-        com.bm.education.models.User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
         return userSkillRepository.findByUserId(user.getId());
     }
 
     @Transactional
     public UserSkill createUserSkillAssessment(SkillAssessmentRequest request, String username) {
-        com.bm.education.models.User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
 
         Skill skill = skillRepository.findById(request.getSkillId())

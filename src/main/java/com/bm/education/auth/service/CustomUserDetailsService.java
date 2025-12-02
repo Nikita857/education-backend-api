@@ -1,6 +1,6 @@
-package com.bm.education.services;
+package com.bm.education.auth.service;
 
-import com.bm.education.repositories.UserRepository;
+import com.bm.education.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

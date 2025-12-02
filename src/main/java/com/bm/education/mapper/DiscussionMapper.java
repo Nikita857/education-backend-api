@@ -2,8 +2,9 @@ package com.bm.education.mapper;
 
 import com.bm.education.dto.discussion.CommentDto;
 import com.bm.education.dto.discussion.DiscussionTopicDto;
-import com.bm.education.models.Comment;
+import com.bm.education.comment.model.Comment;
 import com.bm.education.models.DiscussionTopic;
+import com.bm.education.user.mapper.UserMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

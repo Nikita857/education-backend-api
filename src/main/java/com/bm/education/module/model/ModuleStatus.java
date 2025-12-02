@@ -1,4 +1,4 @@
-package com.bm.education.models;
+package com.bm.education.module.model;
 
 public enum ModuleStatus {
     ACTIVE,

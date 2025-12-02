@@ -1,5 +1,8 @@
-package com.bm.education.models;
+package com.bm.education.comment.model;
 
+import com.bm.education.models.BlogPost;
+import com.bm.education.models.DiscussionTopic;
+import com.bm.education.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,5 +1,6 @@
-package com.bm.education.models;
+package com.bm.education.user.model;
 
+import com.bm.education.models.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

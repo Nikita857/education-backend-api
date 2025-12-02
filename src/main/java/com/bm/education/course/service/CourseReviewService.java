@@ -1,12 +1,12 @@
-package com.bm.education.services;
+package com.bm.education.course.service;
 
-import com.bm.education.exceptions.ReviewDuplicateException;
-import com.bm.education.models.Course;
-import com.bm.education.models.CourseReview;
-import com.bm.education.models.User;
-import com.bm.education.repositories.CourseRepository;
-import com.bm.education.repositories.CourseReviewRepository;
-import com.bm.education.repositories.UserRepository;
+import com.bm.education.api.exception.custom.ReviewDuplicateException;
+import com.bm.education.course.model.Course;
+import com.bm.education.course.model.CourseReview;
+import com.bm.education.user.model.User;
+import com.bm.education.course.repository.CourseRepository;
+import com.bm.education.course.repository.CourseReviewRepository;
+import com.bm.education.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

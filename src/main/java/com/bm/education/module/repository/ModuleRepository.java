@@ -1,7 +1,7 @@
-package com.bm.education.repositories;
+package com.bm.education.module.repository;
 
 import com.bm.education.dto.course.ModuleDto;
-import com.bm.education.models.Module;
+import com.bm.education.module.model.Module;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

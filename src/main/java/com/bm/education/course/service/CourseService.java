@@ -1,15 +1,15 @@
-package com.bm.education.services;
+package com.bm.education.course.service;
 
-import com.bm.education.dto.common.PageResponse;
+import com.bm.education.api.type.page.PageResponse;
 import com.bm.education.dto.course.CourseDto;
-import com.bm.education.mapper.CourseMapper;
-import com.bm.education.models.Course;
-import com.bm.education.models.CourseStatus;
-import com.bm.education.models.User;
+import com.bm.education.course.mapper.CourseMapper;
+import com.bm.education.course.model.Course;
+import com.bm.education.course.model.CourseStatus;
+import com.bm.education.user.model.User;
 import com.bm.education.models.UserCourses;
-import com.bm.education.repositories.CourseRepository;
+import com.bm.education.course.repository.CourseRepository;
 import com.bm.education.repositories.UserCoursesRepository;
-import com.bm.education.repositories.UserRepository;
+import com.bm.education.user.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

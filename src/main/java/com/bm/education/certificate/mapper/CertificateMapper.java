@@ -1,4 +1,4 @@
-package com.bm.education.mapper;
+package com.bm.education.certificate.mapper;
 
 import com.bm.education.certificate.dto.create.CertificateDto;
 import com.bm.education.certificate.model.Certificate;

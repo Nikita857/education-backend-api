@@ -1,5 +1,9 @@
-package com.bm.education.models;
+package com.bm.education.course.model;
 
+import com.bm.education.models.Documentation;
+import com.bm.education.module.model.Module;
+import com.bm.education.models.Tag;
+import com.bm.education.models.UserProgress;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

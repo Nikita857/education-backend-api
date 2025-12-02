@@ -1,4 +1,4 @@
-package com.bm.education.dto.certificate;
+package com.bm.education.certificate.dto.create;
 
 import lombok.Data;
 
