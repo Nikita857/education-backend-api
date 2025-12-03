@@ -1,13 +1,13 @@
-package com.bm.education.services;
+package com.bm.education.feature.skills.service;
 
 import com.bm.education.dto.skill.SkillAssessmentRequest;
-import com.bm.education.models.AssessmentMethod;
-import com.bm.education.models.Skill;
-import com.bm.education.user.model.User;
-import com.bm.education.models.UserSkill;
-import com.bm.education.repositories.SkillRepository;
-import com.bm.education.user.repository.UserRepository;
-import com.bm.education.repositories.UserSkillRepository;
+import com.bm.education.feature.skills.model.AssessmentMethod;
+import com.bm.education.feature.skills.model.Skill;
+import com.bm.education.feature.user.model.User;
+import com.bm.education.feature.user.model.UserSkill;
+import com.bm.education.feature.skills.repository.SkillRepository;
+import com.bm.education.feature.user.repository.UserRepository;
+import com.bm.education.feature.user.repository.UserSkillRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,7 +74,7 @@ class SkillsServiceTest {
     @Test
     void getUserSkills_ShouldReturnUserSkills() {
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
-        when(userSkillRepository.findByUserId(1)).thenReturn(List.of(userSkill));
+        when(userSkillRepository.findByUserId(1L)).thenReturn(List.of(userSkill));
 
         List<UserSkill> result = skillsService.getUserSkills("testuser");
 
@@ -82,7 +82,7 @@ class SkillsServiceTest {
         assertEquals(1, result.size());
         assertEquals(userSkill, result.get(0));
         verify(userRepository, times(1)).findByUsername("testuser");
-        verify(userSkillRepository, times(1)).findByUserId(1);
+        verify(userSkillRepository, times(1)).findByUserId(1L);
     }
 
     @Test
@@ -93,7 +93,7 @@ class SkillsServiceTest {
 
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
         when(skillRepository.findById(1L)).thenReturn(Optional.of(skill));
-        when(userSkillRepository.findByUserIdAndSkillId(1, 1L)).thenReturn(Optional.empty());
+        when(userSkillRepository.findByUserIdAndSkillId(1L, 1L)).thenReturn(Optional.empty());
         when(userSkillRepository.save(any(UserSkill.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         UserSkill result = skillsService.createUserSkillAssessment(request, "testuser");

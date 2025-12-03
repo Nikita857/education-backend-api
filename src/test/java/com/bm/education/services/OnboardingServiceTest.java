@@ -1,9 +1,9 @@
-package com.bm.education.services;
+package com.bm.education.feature.onboarding.service;
 
-import com.bm.education.models.AdaptationProgram;
-import com.bm.education.user.model.User;
-import com.bm.education.repositories.AdaptationProgramRepository;
-import com.bm.education.user.repository.UserRepository;
+import com.bm.education.feature.adaptation.model.AdaptationProgram;
+import com.bm.education.feature.user.model.User;
+import com.bm.education.feature.adaptation.repository.AdaptationProgramRepository;
+import com.bm.education.feature.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +36,7 @@ class OnboardingServiceTest {
     @BeforeEach
     void setUp() {
         user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setUsername("testuser");
 
         program = new AdaptationProgram();
@@ -72,14 +72,14 @@ class OnboardingServiceTest {
 
     @Test
     void assignOnboardingProgram_ShouldAssignUser() {
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(adaptationProgramRepository.save(any(AdaptationProgram.class))).thenReturn(program);
 
-        AdaptationProgram result = onboardingService.assignOnboardingProgram(program, 1);
+        AdaptationProgram result = onboardingService.assignOnboardingProgram(program, 1L);
 
         assertNotNull(result);
         assertEquals(user, result.getAssignedTo());
-        verify(userRepository, times(1)).findById(1);
+        verify(userRepository, times(1)).findById(1L);
         verify(adaptationProgramRepository, times(1)).save(program);
     }
 

@@ -1,0 +1,12 @@
+package com.bm.education.feature.dashboard.dto;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class InstructorDashboardDto {
+    private Integer totalStudents;
+    private Integer totalCourses;
+    private Double averageRating;
+}

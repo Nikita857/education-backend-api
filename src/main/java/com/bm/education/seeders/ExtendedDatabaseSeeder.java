@@ -1,9 +1,8 @@
 package com.bm.education.seeders;
 
-import com.bm.education.course.model.CourseCategory;
-import com.bm.education.course.repository.CourseCategoryRepository;
-import com.bm.education.models.*;
-import com.bm.education.repositories.*;
+import com.bm.education.feature.course.model.CourseCategory;
+import com.bm.education.feature.course.repository.CourseCategoryRepository;
+import com.bm.education.models.AdaptationProgram.ProgramStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class ExtendedDatabaseSeeder implements CommandLineRunner {
 
     private final CourseCategoryRepository courseCategoryRepository;
-    private final SkillRepository skillRepository;
-    private final TagRepository tagRepository;
+    private final com.bm.education.feature.skills.repository.SkillRepository skillRepository;
+    private final com.bm.education.feature.tag.repository.TagRepository tagRepository;
 
     @Override
     public void run(String... args) {

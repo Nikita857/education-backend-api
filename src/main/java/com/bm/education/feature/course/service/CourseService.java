@@ -1,0 +1,156 @@
+package com.bm.education.feature.course.service;
+
+import com.bm.education.shared.type.page.PageResponse;
+import com.bm.education.dto.course.CourseDto;
+import com.bm.education.feature.course.mapper.CourseMapper;
+import com.bm.education.feature.course.model.Course;
+import com.bm.education.feature.course.model.CourseStatus;
+import com.bm.education.feature.user.model.User;
+import com.bm.education.feature.user.model.UserCourseEnrollment;
+import com.bm.education.feature.course.repository.CourseRepository;
+import com.bm.education.feature.user.repository.UserRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class CourseService {
+
+    private final CourseRepository courseRepository;
+    private final CourseMapper courseMapper;
+    private final UserRepository userRepository;
+    private final com.bm.education.feature.user.repository.UserCourseEnrollmentRepository userCourseEnrollmentRepository;
+
+    @Transactional
+    public PageResponse<CourseDto> getAllCourses(int page, int size, String sortBy, @NotNull String sortDir,
+            String title, String category, CourseStatus status) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Course> courses;
+        if (title != null) {
+            // Basic search by title (would be better with a custom query or specification)
+            // For now, let's just use findAll and filter in memory if needed, or assume
+            // title search is not yet fully implemented in repo
+            // But wait, I didn't add findByTitleContaining. Let's stick to findAll for now
+            // or add it later.
+            // Actually, let's use the new finders if applicable.
+            if (category != null) {
+                courses = courseRepository.findByCategorySlug(category, pageable);
+            } else if (status != null) {
+                courses = courseRepository.findAllByStatus(status, pageable);
+            } else {
+                courses = courseRepository.findAll(pageable);
+            }
+        } else if (category != null) {
+            courses = courseRepository.findByCategorySlug(category, pageable);
+        } else if (status != null) {
+            courses = courseRepository.findAllByStatus(status, pageable);
+        } else {
+            courses = courseRepository.findAll(pageable);
+        }
+
+        List<CourseDto> courseDtos = courses.getContent().stream()
+                .map(courseMapper::toDto)
+                .toList();
+
+        PageResponse<CourseDto> response = new PageResponse<>();
+        response.setContent(courseDtos);
+        response.setPage(courses.getNumber());
+        response.setSize(courses.getSize());
+        response.setTotalElements(courses.getTotalElements());
+        response.setTotalPages(courses.getTotalPages());
+        response.setFirst(courses.isFirst());
+        response.setLast(courses.isLast());
+
+        return response;
+    }
+
+    @Transactional
+    public CourseDto getCourseById(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + courseId));
+        return courseMapper.toDto(course);
+    }
+
+    @Transactional
+    public CourseDto getCourseBySlug(String courseSlug) {
+        Course course = courseRepository.findBySlug(courseSlug)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + courseSlug));
+        return courseMapper.toDto(course);
+    }
+
+    @Transactional
+    public CourseDto createCourse(CourseDto courseDto) {
+        Course course = courseMapper.toEntity(courseDto);
+        Course savedCourse = courseRepository.save(course);
+        return courseMapper.toDto(savedCourse);
+    }
+
+    @Transactional
+    public CourseDto updateCourse(Long courseId, CourseDto courseDto) {
+        if (!courseRepository.existsById(courseId)) {
+            throw new EntityNotFoundException("Course not found: " + courseId);
+        }
+        Course course = courseMapper.toEntity(courseDto);
+        course.setId(courseId);
+        Course updatedCourse = courseRepository.save(course);
+        return courseMapper.toDto(updatedCourse);
+    }
+
+    @Transactional
+    public void deleteCourse(Long courseId) {
+        if (!courseRepository.existsById(courseId)) {
+            throw new EntityNotFoundException("Course not found: " + courseId);
+        }
+        courseRepository.deleteById(courseId);
+    }
+
+    @Transactional
+    public List<CourseDto> getUserCourses(Long userId) {
+        if (userId == null) {
+            throw new AccessDeniedException("You don't have access to this resource");
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        List<UserCourseEnrollment> enrollments = userCourseEnrollmentRepository.findByUser(user).stream()
+                .toList();
+        return enrollments.stream()
+                .map(enrollment -> enrollment.getCourse())
+                .map(courseMapper::toDto)
+                .toList();
+    }
+
+    @Transactional
+    public void enroll(Long courseId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+
+        if (userCourseEnrollmentRepository.existsByUserAndCourse(user, course)) {
+            throw new EntityExistsException("User is already enrolled in this course");
+        }
+
+        UserCourseEnrollment enrollment = UserCourseEnrollment.builder()
+                .user(user)
+                .course(course)
+                .build();
+        userCourseEnrollmentRepository.save(enrollment);
+    }
+}

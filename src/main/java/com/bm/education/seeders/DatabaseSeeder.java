@@ -1,31 +1,35 @@
 package com.bm.education.seeders;
 
-import com.bm.education.certificate.model.Certificate;
-import com.bm.education.certificate.repository.CertificateRepository;
-import com.bm.education.comment.model.Comment;
-import com.bm.education.course.model.Course;
-import com.bm.education.course.model.CourseDifficultyLevel;
-import com.bm.education.course.model.CourseReview;
-import com.bm.education.course.model.CourseStatus;
-import com.bm.education.course.repository.CourseRepository;
-import com.bm.education.course.repository.CourseReviewRepository;
-import com.bm.education.lesson.model.Lesson;
-import com.bm.education.lesson.model.LessonContentType;
-import com.bm.education.lesson.repository.LessonRepository;
+import com.bm.education.feature.certificate.model.Certificate;
+import com.bm.education.feature.certificate.repository.CertificateRepository;
+import com.bm.education.feature.comment.model.Comment;
+import com.bm.education.feature.course.model.Course;
+import com.bm.education.feature.course.model.CourseDifficultyLevel;
+import com.bm.education.feature.course.model.CourseReview;
+import com.bm.education.feature.course.model.CourseStatus;
+import com.bm.education.feature.course.repository.CourseRepository;
+import com.bm.education.feature.course.repository.CourseReviewRepository;
+import com.bm.education.feature.lesson.model.Lesson;
+import com.bm.education.feature.lesson.model.LessonContentType;
+import com.bm.education.feature.lesson.repository.LessonRepository;
 import com.bm.education.models.*;
 import com.bm.education.models.AdaptationProgram.ProgramStatus;
-import com.bm.education.module.model.Module;
-import com.bm.education.module.model.ModuleStatus;
-import com.bm.education.module.repository.ModuleRepository;
-import com.bm.education.repositories.*;
-import com.bm.education.user.model.User;
-import com.bm.education.user.repository.UserRepository;
+import com.bm.education.feature.module.model.Module;
+import com.bm.education.feature.module.model.ModuleStatus;
+import com.bm.education.feature.offer.repository.OfferRepository;
+import com.bm.education.feature.skills.repository.SkillRepository;
+import com.bm.education.feature.content.repository.BlogPostRepository;
+import com.bm.education.feature.comment.repository.CommentRepository;
+import com.bm.education.feature.discussion.repository.DiscussionTopicRepository;
+import com.bm.education.feature.adaptation.repository.AdaptationProgramRepository;
+import com.bm.education.feature.certificate.repository.CertificateRepository;
+import com.bm.education.feature.user.model.User;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -46,12 +50,11 @@ public class DatabaseSeeder {
     private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final UserSkillRepository userSkillRepository;
+    private final com.bm.education.feature.user.repository.UserSkillRepository userSkillRepository;
     private final AdaptationProgramRepository adaptationProgramRepository;
-    private final UserProgressRepository userProgressRepository;
     private final CertificateRepository certificateRepository;
-    private final SkillRepository skillRepository;
-    private final UserCourseCompletionRepository userCourseCompletionRepository;
+    private final com.bm.education.feature.skills.repository.SkillRepository skillRepository;
+    private final com.bm.education.feature.user.repository.UserCourseEnrollmentRepository userCourseEnrollmentRepository;
 
     public void seedDatabase() {
         if (userRepository.count() == 0) {
@@ -227,42 +230,19 @@ public class DatabaseSeeder {
         adaptationProgramRepository.save(program);
     }
 
-    private void createDefaultUserProgress() {
-        User user = userRepository.findByUsername("user_1").orElseThrow();
-        Course course = courseRepository.findBySlug("osnovy-programmirovaniya").orElseThrow();
-
-        // Mark first lesson as completed
-        List<Module> modules = moduleRepository.findByCourseId(course.getId());
-        if (modules.isEmpty())
-            return;
-        Module module = modules.get(0);
-
-        List<Lesson> lessons = lessonRepository.findByModuleId(module.getId());
-        if (lessons.isEmpty())
-            return;
-        Lesson lesson = lessons.get(0);
-
-        UserProgress progress = new UserProgress();
-        progress.setUser(user);
-        progress.setCourse(course);
-        progress.setModule(module);
-        progress.setLesson(lesson);
-        progress.setStatus(UserProgressStatus.COMPLETED);
-        progress.setCompletedAt(java.time.Instant.now());
-        userProgressRepository.save(progress);
-    }
 
     private void createDefaultCertificates() {
         User user = userRepository.findByUsername("user_1").orElseThrow();
         Course course = courseRepository.findBySlug("osnovy-programmirovaniya").orElseThrow();
 
         // Simulate course completion
-        UserCourseCompletion completion = new UserCourseCompletion();
-        completion.setUser(user);
-        completion.setCourse(course);
-        completion.setCompletionDate(LocalDateTime.now());
-        completion.setScore(95.0);
-        userCourseCompletionRepository.save(completion);
+        com.bm.education.feature.user.model.UserCourseEnrollment enrollment =
+            new com.bm.education.feature.user.model.UserCourseEnrollment(user, course);
+        enrollment.setStatus(com.bm.education.feature.user.model.UserCourseEnrollment.EnrollmentStatus.COMPLETED);
+        enrollment.setProgressPercentage(100);
+        enrollment.setCompletionDate(Instant.now());
+        enrollment.setFinalScore(95.0);
+        userCourseEnrollmentRepository.save(enrollment);
 
         Certificate certificate = new Certificate();
         certificate.setUser(user);
